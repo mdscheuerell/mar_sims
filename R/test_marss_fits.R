@@ -23,8 +23,10 @@ n_toss <- 20
 
 ## true proc var
 proc_var_true <- rev((seq(n_spp)/10)^2)
+#proc_var_true <- rev((seq(n_spp)/10))
 ## true obs var
 obs_var_true <- rep(c(1,2)/10,ea=2)^2
+#obs_var_true <- rep(1/10,4)
 
 ## interaction types
 int_types <- c("dd", "td", "bu", "cf")
@@ -78,8 +80,8 @@ id_r <- c(1,1,2,2)
 
 ## data list for Stan
 dat <- list(
-  n_time = n_time-n_toss,
-  n_spp = n_spp,
+  n_year = n_time-n_toss,
+  n_species = n_spp,
   n_q = n_q,
   id_q = id_q,
   n_obs = n_spp,
