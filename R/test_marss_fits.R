@@ -64,7 +64,9 @@ lfc <- simTVVAR(Bt = B0_init,
 
 ## true states
 xx <- lfc$states[,-seq(n_toss+1)]
-xx <- xx + matrix(rnorm(n_spp*(n_time-n_toss),0,obs_var_true), n_spp, n_time-n_toss)
+
+## observations
+yy <- xx + matrix(rnorm(n_spp*(n_time-n_toss),0,obs_var_true), n_spp, n_time-n_toss)
 
 ## number of proc SD's
 n_q <- length(unique(proc_var_true))
@@ -84,7 +86,7 @@ dat <- list(
   n_r = n_r,
   id_r = id_r,
   Zmat = diag(n_spp),
-  yy = xx,
+  yy = yy,
   n_off = n_off,
   rc_off = rc_off
 )
