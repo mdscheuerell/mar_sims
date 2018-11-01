@@ -19,12 +19,12 @@ parameters {
   vector<lower=0,upper=1>[n_spp] Bdiag;   // diag of B
   vector<lower=0>[n_q] SD_proc;           // proc SD
   vector<lower=0>[n_r] SD_obs;            // obs SD
-  vector[n_spp] X0;                    // initial states
+  vector[n_spp] X0;                       // initial states
   matrix[n_spp,n_year] xx;                // states  
 }
 transformed parameters {
-  // temp matrix
-  matrix[n_spp,n_year] Ex;       // expectation of states  
+  // expectation of states
+  matrix[n_spp,n_year] Ex;         
   // B matrix
   matrix[n_spp,n_spp] Bmat;
   // diagonal
@@ -51,7 +51,8 @@ model {
   SD_obs ~ normal(0, 1);
   // B matrix
   // diagonal
-  Bdiag ~ beta(1.05,1.05);
+  // Bdiag ~ beta(1.05,1.05);
+  Bdiag ~ normal(0.5,10);
   // off-diagonals
   Boffd ~ normal(0,10);
   // likelihood
@@ -61,5 +62,4 @@ model {
   for(i in 1:n_obs) {
     row(yy,i) ~ normal(row(Zmat * xx, i), SD_obs[id_r[i]]);
   }
-  
 }
