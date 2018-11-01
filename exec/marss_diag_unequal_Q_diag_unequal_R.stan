@@ -7,12 +7,12 @@ data {
   int<lower=1> n_r;              // # unique obs SD
   int<lower=1> n_obs;            // # observed ts
   // vectors
-  int id_q[n_spp];                 // IDs for proc SD
-  int id_r[n_obs];                 // IDs for obs SD
+  int id_q[n_spp];               // IDs for proc SD
+  int id_r[n_obs];               // IDs for obs SD
   // matrices
   matrix[n_obs,n_year] yy;       // data
-  int<lower=0> rc_off[n_off,2];  // indices of non-zero off-diags
   matrix<lower=0,upper=1>[n_obs,n_spp] Zmat;
+  int<lower=0> rc_off[n_off,2];  // indices of non-zero off-diags
 }
 parameters {
   vector<lower=-1,upper=1>[n_off] Boffd;  // off-diags of B
@@ -24,8 +24,8 @@ parameters {
 }
 transformed parameters {
   // cov matrices
-  cov_matrix[n_spp] QQ;
-  cov_matrix[n_spp] RR;
+  vector[n_spp] Q;
+  vector[n_obs] R;
   // B matrix
   matrix[n_spp,n_spp] Bmat;
   // diagonal
@@ -36,23 +36,11 @@ transformed parameters {
   }
   // cov matrix Q
   for(i in 1:n_spp) {
-  	QQ[i,i] = SD_proc[id_q[i]];
-  }
-  for(i in 1:(n_spp-1)) {
-  	for(j in (i+1):n_spp) {
-  		QQ[i,j] = 0;
-  		QQ[j,i] = 0;
-  	}
+  	Q[i] = SD_proc[id_q[i]];
   }
   // cov matrix R
   for(i in 1:n_obs) {
-  	RR[i,i] = SD_obs[id_r[i]];
-  }
-  for(i in 1:(n_obs-1)) {
-  	for(j in (i+1):n_obs) {
-  		RR[i,j] = 0;
-  		RR[j,i] = 0;
-  	}
+  	R[i] = SD_obs[id_r[i]];
   }
 }
 model {
@@ -80,4 +68,5 @@ model {
   for(n in 1:n_obs) {
     row(yy,n) ~ normal(row(Zmat * xx, n), RR);
   }
+  
 }
