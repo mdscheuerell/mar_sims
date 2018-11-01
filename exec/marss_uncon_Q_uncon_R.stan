@@ -71,18 +71,19 @@ model {
   // intial states
   X0 ~ normal(0,5);
   // process SD's
-  for(i in 1:n_q) {
-  	SD_proc[i] ~ cauchy(0, 3);
-  }
-  // SD_proc ~ cauchy(0, 5);
+  // for(i in 1:n_q) {
+  // 	 SD_proc[i] ~ cauchy(0, 3);
+  // }
+  SD_proc ~ normal(0, 1);
   // obs SD
-  for(i in 1:n_r) {
-  	SD_obs[i] ~ cauchy(0, 3);
-  }
-  // SD_obs ~ cauchy(0, 5);
+  // for(i in 1:n_r) {
+  //   SD_obs[i] ~ cauchy(0, 3);
+  // }
+  SD_obs ~ normal(0, 1);
   // B matrix
   // diagonal
   Bdiag ~ beta(1.05,1.05);
+  // Bdiag ~ normal(0.5,10);
   // off-diagonals
   Boffd ~ normal(0,10);
   // likelihood
