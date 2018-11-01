@@ -75,6 +75,9 @@ model {
   // likelihood
   for(t in 2:n_year) {
     col(xx,t) ~ multi_normal(Bmat * col(xx,t-1), QQ);
-    col(yy,t) ~ multi_normal(Zmat * col(xx,t), RR);
+    // col(yy,t) ~ multi_normal(Zmat * col(xx,t), RR);
+  }
+  for(n in 1:n_obs) {
+    row(yy,n) ~ normal(row(Zmat * xx, n), RR);
   }
 }
