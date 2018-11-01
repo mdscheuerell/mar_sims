@@ -61,11 +61,11 @@ model {
   // X0 ~ normal(0,1);
   // process SD's
   for(i in 1:n_q) {
-  	SD_proc[i] ~ cauchy(0, 5);
+  	SD_proc[i] ~ cauchy(0, 1);
   }
   // obs SD
   for(i in 1:n_r) {
-  	SD_obs[i] ~ cauchy(0, 5);
+  	SD_obs[i] ~ cauchy(0, 1);
   }
   // B matrix
   // diagonal
