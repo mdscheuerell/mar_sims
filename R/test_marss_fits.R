@@ -17,15 +17,15 @@ stan_dir <- here("exec")
 ## number of species
 n_spp <- 4
 ## number of time points
-n_time <- 120
+n_time <- 70
 ## number of initial samples to discard
 n_toss <- 20
 
 ## true proc var
 # proc_var_true <- rev((seq(n_spp)/10)^2)
-proc_var_true <- rev((seq(n_spp)/5))
+proc_var_true <- rev((seq(n_spp)/10))
 ## true obs var
-obs_var_true <- rep(c(2,1)/10,ea=2)
+obs_var_true <- rep(c(2,1)/20,ea=2)
 
 ## interaction types
 int_types <- c("dd", "td", "bu", "cf")
@@ -75,8 +75,8 @@ id_q <- seq(n_spp)
 
 ## number of obs SD's
 n_r <- length(unique(obs_var_true))
-# id_r <- c(1,1,2,2)
-id_r <- rep(1,4)
+id_r <- c(1,1,2,2)
+# id_r <- rep(1,4)
 
 ## data list for Stan
 dat <- list(
@@ -93,24 +93,34 @@ dat <- list(
   rc_off = rc_off
 )
 
-inits <- list(
-  list(Bdiag = rep(0.5, n_spp), Boffd = rep(0,n_off)),
-  list(Bdiag = rep(0.5, n_spp), Boffd = rep(0,n_off))
-)
-  
+## function to generate inits
+initf <- function(chain_id = 1) {
+  list(Bdiag = runif(n_spp, 0.5, 0.7), Boffd = runif(n_off, -0.2, 0.2),
+       SD_proc=runif(n_q, 0.1,0.2), SD_obs = runif(n_r, 0,0.2))
+} 
+
+## list of lists for initial values
+n_chains <- 4
+inits <- lapply(1:n_chains, function(id) initf(chain_id = id))
+
 ## fit model
 fit <- stan(file = file.path(stan_dir, "marss_diag_unequal_Q_diag_unequal_R.stan"),
             data = dat,
             pars = c("Bmat", "SD_proc", "SD_obs"),
             init = inits,
-            control = list(max_treedepth = 15, adapt_delta = 0.9),
-            iter = 4000, chains = 2)
+            control = list(max_treedepth = 12, adapt_delta = 0.8),
+            iter = 10000, thin = 20, chains = n_chains)
 fit
 ## estimated B
 round(matrix(summary(fit)$summary[1:(n_spp)^2,"mean"],n_spp,n_spp,byrow=TRUE),2)
 ## true B
 B0_init
 
+traceplot(fit, c("SD_proc","SD_obs"))
+
+sampler_params <- get_sampler_params(fit, inc_warmup = FALSE)
+max_treedepth_by_chain <- sapply(sampler_params, function(x) max(x[, "treedepth__"]))
+max_treedepth_by_chain
 
 ##----------------------
 ## unconstrained models
@@ -129,11 +139,6 @@ dat <- list(
   yy = t(yy),
   n_off = n_off,
   rc_off = rc_off
-)
-
-inits <- list(
-  list(Bdiag = rep(0.5, n_spp), Boffd = rep(0,n_off)),
-  list(Bdiag = rep(0.5, n_spp), Boffd = rep(0,n_off))
 )
 
 # fit <- stan(file = file.path(stan_dir, "marss_diag_unequal_Q_diag_unequal_R.stan"),
