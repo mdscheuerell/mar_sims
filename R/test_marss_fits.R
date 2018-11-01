@@ -22,11 +22,10 @@ n_time <- 120
 n_toss <- 20
 
 ## true proc var
-proc_var_true <- rev((seq(n_spp)/10)^2)
-#proc_var_true <- rev((seq(n_spp)/10))
+# proc_var_true <- rev((seq(n_spp)/10)^2)
+proc_var_true <- rev((seq(n_spp)/5))
 ## true obs var
-obs_var_true <- rep(c(1,2)/10,ea=2)^2
-#obs_var_true <- rep(1/10,4)
+obs_var_true <- rep(c(2,1)/10,ea=2)
 
 ## interaction types
 int_types <- c("dd", "td", "bu", "cf")
@@ -74,9 +73,10 @@ yy <- xx + matrix(rnorm(n_spp*(n_time-n_toss),0,obs_var_true), n_spp, n_time-n_t
 n_q <- length(unique(proc_var_true))
 id_q <- seq(n_spp)
 
-## number of proc SD's
+## number of obs SD's
 n_r <- length(unique(obs_var_true))
-id_r <- c(1,1,2,2)
+# id_r <- c(1,1,2,2)
+id_r <- rep(1,4)
 
 ## data list for Stan
 dat <- list(
@@ -93,11 +93,55 @@ dat <- list(
   rc_off = rc_off
 )
 
+inits <- list(
+  list(Bdiag = rep(0.5, n_spp), Boffd = rep(0,n_off)),
+  list(Bdiag = rep(0.5, n_spp), Boffd = rep(0,n_off))
+)
+  
 ## fit model
 fit <- stan(file = file.path(stan_dir, "marss_diag_unequal_Q_diag_unequal_R.stan"),
             data = dat,
             pars = c("Bmat", "SD_proc", "SD_obs"),
-            control = list(max_treedepth = 15),
+            init = inits,
+            control = list(max_treedepth = 15, adapt_delta = 0.9),
+            iter = 4000, chains = 2)
+fit
+## estimated B
+round(matrix(summary(fit)$summary[1:(n_spp)^2,"mean"],n_spp,n_spp,byrow=TRUE),2)
+## true B
+B0_init
+
+
+##----------------------
+## unconstrained models
+##----------------------
+
+## data list for Stan
+dat <- list(
+  n_year = n_time-n_toss,
+  n_species = n_spp,
+  n_q = n_q,
+  id_q = id_q,
+  n_obs = n_spp,
+  n_r = n_r,
+  id_r = id_r,
+  Zmat = diag(n_spp),
+  yy = t(yy),
+  n_off = n_off,
+  rc_off = rc_off
+)
+
+inits <- list(
+  list(Bdiag = rep(0.5, n_spp), Boffd = rep(0,n_off)),
+  list(Bdiag = rep(0.5, n_spp), Boffd = rep(0,n_off))
+)
+
+# fit <- stan(file = file.path(stan_dir, "marss_diag_unequal_Q_diag_unequal_R.stan"),
+fit <- stan(file = file.path(stan_dir, "marss_uncon_Q_uncon_R.stan"),
+            data = dat,
+            pars = c("Bmat", "SD_proc", "SD_obs"),
+            init = inits,
+            control = list(max_treedepth = 15, adapt_delta = 0.9),
             iter = 4000, chains = 2)
 fit
 ## estimated B
