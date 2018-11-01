@@ -19,13 +19,12 @@ parameters {
   vector<lower=0,upper=1>[n_spp] Bdiag;   // diag of B
   vector<lower=0>[n_q] SD_proc;           // proc SD
   vector<lower=0>[n_r] SD_obs;            // obs SD
-  // vector[n_spp] X0;                    // initial states
+  vector[n_spp] X0;                    // initial states
   matrix[n_spp,n_year] xx;                // states  
 }
 transformed parameters {
-  // cov matrices
-  vector[n_spp] Q;
-  vector[n_obs] R;
+  // temp matrix
+  matrix[n_spp,n_year] Ex;       // expectation of states  
   // B matrix
   matrix[n_spp,n_spp] Bmat;
   // diagonal
@@ -34,39 +33,33 @@ transformed parameters {
   for(i in 1:n_off) {
     Bmat[rc_off[i,1],rc_off[i,2]] = Boffd[i];
   }
-  // cov matrix Q
-  for(i in 1:n_spp) {
-  	Q[i] = SD_proc[id_q[i]];
-  }
-  // cov matrix R
-  for(i in 1:n_obs) {
-  	R[i] = SD_obs[id_r[i]];
+  // expectations
+  for(t in 1:n_year) {
+    if (t < 2)
+      Ex[,t] = Bmat * X0;
+    else
+      Ex[,t] = Bmat * xx[,t-1];
   }
 }
 model {
   // priors
   // intial states
-  // X0 ~ normal(0,1);
+  X0 ~ normal(0,5);
   // process SD's
-  for(i in 1:n_q) {
-  	SD_proc[i] ~ cauchy(0, 5);
-  }
+  SD_proc ~ normal(0, 1);
   // obs SD
-  for(i in 1:n_r) {
-  	SD_obs[i] ~ cauchy(0, 5);
-  }
+  SD_obs ~ normal(0, 1);
   // B matrix
   // diagonal
   Bdiag ~ beta(1.05,1.05);
   // off-diagonals
   Boffd ~ normal(0,10);
   // likelihood
-  for(t in 2:n_year) {
-    col(xx,t) ~ multi_normal(Bmat * col(xx,t-1), QQ);
-    // col(yy,t) ~ multi_normal(Zmat * col(xx,t), RR);
+  for(i in 1:n_spp) {
+    row(xx,i) ~ normal(row(Ex,i), SD_proc[id_q[i]]);
   }
-  for(n in 1:n_obs) {
-    row(yy,n) ~ normal(row(Zmat * xx, n), RR);
+  for(i in 1:n_obs) {
+    row(yy,i) ~ normal(row(Zmat * xx, i), SD_obs[id_r[i]]);
   }
   
 }
