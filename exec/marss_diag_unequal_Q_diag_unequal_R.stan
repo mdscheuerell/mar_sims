@@ -28,7 +28,7 @@ transformed parameters {
   // B matrix
   matrix[n_spp,n_spp] Bmat;
   // diagonal
-  Bmat = diag_matrix(0.5 + Bdiag);
+  Bmat = diag_matrix(Bdiag);
   // off-diagonals
   for(i in 1:n_off) {
     Bmat[rc_off[i,1],rc_off[i,2]] = Boffd[i];
