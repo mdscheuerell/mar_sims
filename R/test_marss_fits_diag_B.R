@@ -15,18 +15,18 @@ stan_dir <- here("exec")
 
 
 ## number of species
-n_spp <- n_obs <- 4
+n_spp <- 4
 ## number of time points
-n_time <- 120
+n_time <- 70
 ## number of initial samples to discard
 n_toss <- 20
 
 ## true proc var
-# proc_var_true <- rev((seq(n_spp)/10)^2)
-proc_var_true <- 2*rev((seq(n_spp)/10))
+# SD_proc_true <- rev((seq(n_spp)/10)^2)
+SD_proc_true <- rev((seq(n_spp)/10))
 ## true obs var
-obs_var_true <- rep(c(2,1)/10,ea=2)
-obs_var_true <- rep(1,n_obs)/10
+SD_obs_true <- rep(c(2,1)/10,ea=2)
+SD_obs_true <- rep(1,n_obs)/10
 
 ## interaction types
 int_types <- c("dd", "td", "bu", "cf")
@@ -42,27 +42,32 @@ B0_init <- round(B0_init, 2)
 ## simulate process. var_QX is process error on states.
 ## var_QB is process var on B -- ignored for static B models.
 lfc <- simTVVAR(Bt = B0_init,
-  topo = B0_lfc,
-  TT = n_time,
-  var_QX = proc_var_true,
-  cov_QX = 0,
-  var_QB = 0,
-  cov_QB = 0)
+                topo = B0_lfc,
+                TT = n_time,
+                var_QX = SD_proc_true,
+                cov_QX = 0,
+                var_QB = 0,
+                cov_QB = 0)
 
 ## true states
 xx <- lfc$states[,-seq(n_toss+1)]
 
 ## observations
-yy <- xx + matrix(rnorm(n_spp*(n_time-n_toss),0,obs_var_true), n_spp, n_time-n_toss)
+yy <- xx + matrix(rnorm(n_spp*(n_time-n_toss),0,SD_obs_true), n_spp, n_time-n_toss)
+y2 <- xx + matrix(rnorm(n_spp*(n_time-n_toss),0,SD_obs_true), n_spp, n_time-n_toss)
 
+yy <- rbind(yy, y2)
+
+n_obs <- nrow(yy)
+  
 ## number of proc SD's
-n_q <- length(unique(proc_var_true))
+n_q <- length(unique(SD_proc_true))
 id_q <- seq(n_spp)
 
 ## number of obs SD's
-n_r <- length(unique(obs_var_true))
+n_r <- length(unique(SD_obs_true))
 # id_r <- c(1,1,2,2)
-id_r <- rep(1,4)
+id_r <- rep(1,n_obs)
 
 ## data list for Stan
 dat <- list(
@@ -70,17 +75,18 @@ dat <- list(
   n_species = n_spp,
   n_q = n_q,
   id_q = id_q,
-  n_obs = n_spp,
+  n_obs = n_obs,
   n_r = n_r,
   id_r = id_r,
-  Zmat = diag(n_spp),
+  # Zmat = diag(n_spp),
+  Zmat = rbind(diag(n_spp),diag(n_spp)),
   yy = yy
 )
 
 ## function to generate inits
 initf <- function(chain_id = 1) {
   list(Bdiag = runif(n_spp, 0.5, 0.7),
-       SD_proc=runif(n_q, 0.1,0.2), SD_obs = runif(n_r, 0.1 ,0.2))
+       SD_proc=runif(n_q, 0.1,0.5), SD_obs = runif(n_r, 0 ,0.2))
 } 
 
 ## list of lists for initial values
@@ -92,8 +98,8 @@ fit <- stan(file = file.path(stan_dir, "marss_diag_B_diag_unequal_Q_diag_unequal
             data = dat,
             pars = c("Bdiag", "SD_proc", "SD_obs"),
             init = inits,
-            control = list(max_treedepth = 15, adapt_delta = 0.95),
-            iter = 6000, warmup = 4000, thin = 8, chains = n_chains)
+            control = list(max_treedepth = 15, adapt_delta = 0.9),
+            iter = 3000, warmup = 2000, thin = 1, chains = n_chains)
 fit
 ## estimated B
 round(diag(summary(fit)$summary[1:(n_spp),"mean"]),2)
