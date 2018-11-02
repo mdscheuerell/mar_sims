@@ -7,8 +7,8 @@ data {
   int<lower=1> n_r;              // # unique obs SD
   int<lower=1> n_obs;            // # observed ts
   // vectors
-  int id_q[n_spp];                 // IDs for proc SD
-  int id_r[n_obs];                 // IDs for obs SD
+  int id_q[n_spp];               // IDs for proc SD
+  int id_r[n_obs];               // IDs for obs SD
   // matrices
   matrix[n_obs,n_year] yy;       // data
   int<lower=0> rc_off[n_off,2];  // indices of non-zero off-diags
