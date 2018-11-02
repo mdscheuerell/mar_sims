@@ -25,7 +25,7 @@ n_toss <- 20
 # proc_var_true <- rev((seq(n_spp)/10)^2)
 proc_var_true <- rev((seq(n_spp)/10))
 ## true obs var
-obs_var_true <- rep(c(2,1)/20,ea=2)
+obs_var_true <- rep(c(2,1)/10,ea=2)
 
 ## interaction types
 int_types <- c("dd", "td", "bu", "cf")
@@ -108,7 +108,7 @@ fit <- stan(file = file.path(stan_dir, "marss_diag_unequal_Q_diag_unequal_R.stan
             data = dat,
             pars = c("Bmat", "SD_proc", "SD_obs"),
             init = inits,
-            control = list(max_treedepth = 12, adapt_delta = 0.8),
+            control = list(max_treedepth = 12, adapt_delta = 0.9),
             iter = 10000, thin = 20, chains = n_chains)
 fit
 ## estimated B
