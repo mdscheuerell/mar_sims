@@ -95,7 +95,7 @@ dat <- list(
 )
 
 ## fit model
-fit <- stan(file = file.path(stan_dir, "marss_diag_unequal_Q.stan"),
+fit <- stan(file = file.path(stan_dir, "mar_diag_unequal_Q.stan"),
             data = dat, pars = c("Bmat", "SD_proc", "SD_obs"),
             iter = 4000, chains = 2)
 fit
