@@ -17,7 +17,7 @@ stan_dir <- here("exec")
 ## number of species
 n_spp <- 4
 ## number of time points
-n_time <- 70
+n_time <- 120
 ## number of initial samples to discard
 n_toss <- 20
 
@@ -25,7 +25,7 @@ n_toss <- 20
 # SD_proc_true <- rev((seq(n_spp)/10)^2)
 SD_proc_true <- rev((seq(n_spp)/10))
 ## true obs var
-SD_obs_true <- rep(c(2,1)/10,ea=2)
+# SD_obs_true <- rep(c(2,1)/10,ea=2)
 SD_obs_true <- rep(1,n_obs)/10
 
 ## interaction types
@@ -57,6 +57,8 @@ yy <- xx + matrix(rnorm(n_spp*(n_time-n_toss),0,SD_obs_true), n_spp, n_time-n_to
 y2 <- xx + matrix(rnorm(n_spp*(n_time-n_toss),0,SD_obs_true), n_spp, n_time-n_toss)
 
 yy <- rbind(yy, y2)
+
+yy <- yy - apply(yy, 1, mean)
 
 n_obs <- nrow(yy)
   
@@ -111,4 +113,25 @@ traceplot(fit, c("SD_proc","SD_obs"))
 sampler_params <- get_sampler_params(fit, inc_warmup = FALSE)
 max_treedepth_by_chain <- sapply(sampler_params, function(x) max(x[, "treedepth__"]))
 max_treedepth_by_chain
+
+
+##-------------------
+## try it with MARSS
+##-------------------
+
+library(MARSS)
+
+mod_list <- list(
+  B = "diagonal and unequal",
+  U = "zero",
+  Q = "diagonal and unequal",
+  Z = rbind(diag(n_spp),diag(n_spp)),
+  A = "zero",
+  R = "diagonal and equal"
+)
+
+MARSS(yy, mod_list)
+
+mod_list$Z = "identity"
+MARSS(y2, mod_list, control=list(maxit=2000))
 
