@@ -59,13 +59,28 @@ lfc <- simTVVAR(Bt = B0_init,
 ## true states
 xx <- lfc$states[,-(1:21)]
 
+# indices of positive values - Stan can't handle NAs
+row_indx_pos <- matrix(rep(seq_len(nrow(xx)), ncol(xx)), nrow(xx), ncol(xx))[!is.na(xx)]
+col_indx_pos <- matrix(sort(rep(seq_len(ncol(xx)), nrow(xx))), nrow(xx), ncol(xx))[!is.na(xx)]
+n_pos <- length(row_indx_pos)
+
+row_indx_na <- matrix(rep(seq_len(nrow(xx)), ncol(xx)), nrow(xx), ncol(xx))[is.na(xx)]
+col_indx_na <- matrix(sort(rep(seq_len(ncol(xx)), nrow(xx))), nrow(xx), ncol(xx))[is.na(xx)]
+n_na <- length(row_indx_na)
+
 ## data list for Stan
 dat <- list(
 n_year = n_year-20,
 n_spp = n_species,
 n_off = n_off,
 y = xx,
-rc_off
+rc_off,
+  n_na = n_na,
+  row_indx_na = row_indx_na,
+  col_indx_na = col_indx_na,
+  n_pos = n_pos,
+  row_indx_pos = row_indx_pos,
+  col_indx_pos = col_indx_pos
 )
 
 ## fit model
@@ -76,4 +91,3 @@ fit <- stan(file = file.path(stan_dir,"mar_diag_equal_Q.stan"),
 round(matrix(summary(fit)$summary[1:16,"mean"],n_species,n_species,byrow=TRUE),2)
 ## true B
 B0_init
-            
