@@ -13,6 +13,12 @@ data {
   row_vector[n_obs] yy[n_year];     // data
   int<lower=0> rc_off[n_off,2];  // indices of non-zero off-diags
   matrix<lower=0,upper=1>[n_spp,n_obs] Zmat;  // Z matrix
+  int<lower=0> n_pos; // number of non-missing observations
+  int<lower=0> row_indx_pos[n_pos];
+  int<lower=0> col_indx_pos[n_pos];
+  int<lower=0> n_na; // number of missing observations
+  int<lower=0> row_indx_na[n_na];
+  int<lower=0> col_indx_na[n_na];
 }
 parameters {
   vector<lower=-1,upper=1>[n_off] Boffd;  // off-diags of B
@@ -21,7 +27,8 @@ parameters {
   cholesky_factor_corr[n_spp] L_corr_proc;  // chol factor
   vector<lower=0>[n_r] SD_obs;            // obs SD
   cholesky_factor_corr[n_obs] L_corr_obs;  // chol factor
-  matrix[n_year,n_spp] xx;                // states  
+  matrix[n_year,n_spp] xx;                // states
+  real ymiss[n_na];
 }
 transformed parameters {
   // SD
@@ -29,6 +36,7 @@ transformed parameters {
   vector[n_obs] sig_obs;
   // B matrix
   matrix[n_spp,n_spp] Bmat;
+  row_vector[n_obs] yymiss[n_year];     // data
   // B diagonal
   Bmat = diag_matrix(Bdiag);
   // B off-diagonals
@@ -42,6 +50,16 @@ transformed parameters {
   // obs SD
   for(i in 1:n_obs) {
     sig_obs[i] = SD_obs[id_r[i]];
+  }
+  // Deal with missing and non-missing values separately
+  for(i in 1:n_pos) {
+    yymiss[row_indx_pos[i], col_indx_pos[i]] = yy[row_indx_pos[i], col_indx_pos[i]];
+  }
+  // Include missing observations
+  if(n_na > 0) {
+    for(i in 1:n_na) {
+      yymiss[row_indx_na[i], col_indx_na[i]] = ymiss[i];
+    }
   }
 }
 model {
@@ -67,6 +85,6 @@ model {
     if (t > 1) {
       xx[t] ~ multi_normal_cholesky(xx[t-1] * Bmat, diag_pre_multiply(sig_proc, L_corr_proc));
     }
-    yy[t] ~ multi_normal_cholesky(xZ_tmp[t], diag_pre_multiply(sig_obs, L_corr_obs));
+    yymiss[t] ~ multi_normal_cholesky(xZ_tmp[t], diag_pre_multiply(sig_obs, L_corr_obs));
   }
 }

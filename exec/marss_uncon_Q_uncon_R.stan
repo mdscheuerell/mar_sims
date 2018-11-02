@@ -13,6 +13,12 @@ data {
   vector[n_obs] yy[n_year];       // data
   matrix<lower=0,upper=1>[n_obs,n_spp] Zmat;
   int<lower=0> rc_off[n_off,2];  // indices of non-zero off-diags
+  int<lower=0> n_pos; // number of non-missing observations
+  int<lower=0> row_indx_pos[n_pos];
+  int<lower=0> col_indx_pos[n_pos];
+  int<lower=0> n_na; // number of missing observations
+  int<lower=0> row_indx_na[n_na];
+  int<lower=0> col_indx_na[n_na];
 }
 parameters {
   vector<lower=-1,upper=1>[n_off] Boffd;  // off-diags of B
@@ -20,12 +26,13 @@ parameters {
   vector<lower=0>[n_q] SD_proc;           // proc SD
   vector<lower=0>[n_r] SD_obs;            // obs SD
   vector[n_spp] X0;                    // initial states
-  vector[n_spp] xx[n_year];                // states  
+  vector[n_spp] xx[n_year];                // states
+  real ymiss[n_na];
 }
 transformed parameters {
   // temp matrices
   vector[n_obs] Ey[n_year];       // expectation of data
-  vector[n_spp] Ex[n_year];       // expectation of states  
+  vector[n_spp] Ex[n_year];       // expectation of states
   // cov matrices
   cov_matrix[n_spp] QQ;
   cov_matrix[n_obs] RR;
@@ -65,6 +72,16 @@ transformed parameters {
   	  RR[j,i] = 0;
   	}
   }
+  // Deal with missing and non-missing values separately
+  for(i in 1:n_pos) {
+    yymiss[row_indx_pos[i], col_indx_pos[i]] = yy[row_indx_pos[i], col_indx_pos[i]];
+  }
+  // Include missing observations
+  if(n_na > 0) {
+    for(i in 1:n_na) {
+      yymiss[row_indx_na[i], col_indx_na[i]] = ymiss[i];
+    }
+  }
 }
 model {
   // priors
@@ -88,6 +105,6 @@ model {
   Boffd ~ normal(0,10);
   // likelihood
   xx ~ multi_normal(Ex, QQ);
-  yy ~ multi_normal(Ey, RR);
+  yymiss ~ multi_normal(Ey, RR);
 }
 
