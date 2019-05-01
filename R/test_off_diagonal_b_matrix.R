@@ -145,7 +145,12 @@ save(sims,file="test_off_diagonal_b_matrix.Rdata")
 ggplot(sims, aes(B_off, B12_50-B_off,group=B_off)) + geom_boxplot()
 
 ggplot(sims, aes(B_off, B22_50,group=B_off)) + geom_boxplot() +
-  geom_abline(intercept=0.7,slope=0,col="red")
+  facet_wrap(~B_diag)
+
+pdf("test_off_diagonal_b.pdf")
+ggplot(sims, aes(B_off, abs(B12_50-B_off)/(B_off),group=B_off)) + geom_boxplot() +
+  facet_wrap(~B_diag) + xlab("True B[1,2]") + ylab("Percent abs. error")
+dev.off()
 
 # we can also plot individual datasets
 ggplot(sims,
