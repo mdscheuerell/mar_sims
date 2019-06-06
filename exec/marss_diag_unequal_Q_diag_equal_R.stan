@@ -66,15 +66,15 @@ model {
   // X0 ~ normal(0,1);
   // process SD's
   for(i in 1:n_q) {
-  	SD_proc[i] ~ cauchy(0, 5);
+  	SD_proc[i] ~ student_t(3,0,2);
   }
   // obs SD
-  SD_obs ~ cauchy(0, 5);
+  SD_obs ~ student_t(3,0,2);
   // B matrix
   // diagonal
   Bdiag ~ beta(1.05,1.05);
   // off-diagonals
-  Boffd ~ normal(0,10);
+  Boffd ~ normal(0,1);
   // likelihood
   for(t in 2:n_year) {
     col(xx,t) ~ multi_normal(Bmat * col(xx,t-1), QQ);
