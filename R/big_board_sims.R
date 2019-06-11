@@ -6,7 +6,7 @@
 ##------------------------------
 
 grid = readRDS("grid.rds")
-
+devtools::install_github("nwfsc-timeseries/tvvarss")
 library("tvvarss")
 library("rstan")
 library("broom")
@@ -24,7 +24,7 @@ int_types <- c("dd", "td", "bu", "cf")
 ## number of species
 n_species <- 4
 
-for(ii in 1:nrow(grid)) {
+for(ii in seq(1,nrow(grid))) {
 
 # set seed
 set.seed(grid$seed[ii])
@@ -120,7 +120,7 @@ fit <- stan(file = file.path(stan_dir, "marss_diag_unequal_Q_diag_equal_R.stan")
             iter = 1000, chains = 3)
 
 # save results to a file
-saveRDS(fit, file=paste0("results/raw_models/run_"ii,".rds"))
+saveRDS(fit, file=paste0("results/raw_models/run_",ii,".rds"))
 
 # also make tidy summary into table -- get 95%, 90% and quartiles
 pars = broom::tidy(fit, conf.int=TRUE, conf.level=c(0.95),
