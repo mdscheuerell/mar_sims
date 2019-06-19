@@ -12,10 +12,6 @@ if(!require("rstan")) {
   install.packages("rstan")
   library("rstan")
 }
-# if(!require("dplyr")) {
-#   install.packages("dplyr")
-#   library("dplyr")
-# }
 if(!require("here")) {
   install.packages("here")
   library("here")
@@ -37,8 +33,8 @@ grid <- readRDS("grid.rds")
 ## specify options
 ##-----------------
 
-## number of species
-n_species <- 4
+## interaction types
+int_types <- c("dd", "td", "bu", "cf")
 
 ## number of initial samples to discard
 n_toss <- 20
@@ -49,7 +45,8 @@ stan_ctrl <- list(max_treedepth = 25, adapt_delta = 0.99)
 stan_mcmc <- list(iter = 10, chains = 3, refresh = 0)
 
 ## interaction matrices (B)
-## linear food chain (eg, bass > minnows > zoop > phyto)
+## index 1 is base; 2 & 3 are intermediate; 4 is top
+## linear food chain (eg, phyto -> zoop -> minnows -> bass)
 topo_lfc <- list("dd", "td",    0,    0,
                  "bu", "dd", "td",    0,
                     0, "bu", "dd", "td",
@@ -59,7 +56,7 @@ B0_lfc <- c(0.5, -0.1,  0.0,  0.0,
             0.0,  0.2,  0.7, -0.3,
             0.0,  0.0,  0.1,  0.8)
 
-## 2 intermediate prey (eg, alewife > [Daphnia = Bosmina] > phyto)
+## 2 intermediate prey (eg, phyto -> [Daphnia = Bosmina] -> alewife)
 topo_int <- list("dd", "td",    0,    0,
                  "bu", "dd", "td", "td",
                     0, "bu", "dd", "td",
@@ -69,7 +66,7 @@ B0_int <- c(0.5, -0.3,  0.0,  0.0,
             0.0, -0.2,  0.6, -0.3,
             0.0,  0.3,  0.2,  0.7)
 
-## 2 basal prey (eg, starfish > snails > [barnacles = mussels])
+## 2 basal prey (eg, [barnacles = mussels] -> snails -> starfish)
 topo_bas <- list("dd", "td",    0, "td",
                  "bu", "dd", "td", "td",
                     0, "bu", "dd", "td",
@@ -84,11 +81,11 @@ B0_bas <- c(0.5, -0.1,  0.0, -0.3,
 ## setup
 ##-------
 
-## interaction types
-int_types <- c("dd", "td", "bu", "cf")
-
 ## initialize table of posterior summaries
 post_estimates <- NULL
+
+## number of species
+n_species <- sqrt(length(B0_lfc))
 
 
 ##-----------
@@ -121,6 +118,11 @@ for(ii in seq(1,nrow(grid))) {
   Bmat <- matrix(B_vals, n_species, n_species, byrow = TRUE)
   topo <- matrix(B_topo, n_species, n_species, byrow = TRUE)
   
+  ## row/col indices for off-diagonals
+  rc_off <- do.call(rbind, sapply(int_types[-1], function(x) which(topo == x, arr.ind = TRUE)))
+  ## number of non-zero off-diagonals
+  n_off <- nrow(rc_off)
+  
   ## simulate process. var_QX is process error on states.
   ## var_QB is process var on B -- ignored for static B models.
   sim <- simTVVAR(Bt = Bmat,
@@ -135,7 +137,7 @@ for(ii in seq(1,nrow(grid))) {
   xx <- sim$states[,-seq(n_toss+1)]
 
   ## observations
-  yy <- xx + matrix(rnorm(n_species*(n_time-n_toss),0,obs_var_true), n_species, n_time-n_toss)
+  yy <- xx + matrix(rnorm(n_species*(n_time-n_toss), 0, obs_var_true), n_species, n_time-n_toss)
 
   ## number of proc SD's
   n_q <- length(unique(proc_var_true))
@@ -208,4 +210,3 @@ for(ii in seq(1,nrow(grid))) {
   saveRDS(post_estimates, file = file.path(res_dir, "posterior_summaries.rds"))
   
 }
-
