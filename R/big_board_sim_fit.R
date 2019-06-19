@@ -46,7 +46,7 @@ n_toss <- 20
 ## stan options
 stan_model <- "marss_diag_unequal_Q_diag_equal_R.stan"
 stan_ctrl <- list(max_treedepth = 25, adapt_delta = 0.99)
-stan_mcmc <- list(iter = 1000, chains = 3, refresh = 0)
+stan_mcmc <- list(iter = 10, chains = 3, refresh = 0)
 
 ## interaction matrices (B)
 ## linear food chain (eg, bass > minnows > zoop > phyto)
@@ -59,7 +59,7 @@ B0_lfc <- c(0.5, -0.1,  0.0,  0.0,
             0.0,  0.2,  0.7, -0.3,
             0.0,  0.0,  0.1,  0.8)
 
-## 2 intermediate prey (eg, alewife > Daphnia = Bosmina > phyto)
+## 2 intermediate prey (eg, alewife > [Daphnia = Bosmina] > phyto)
 topo_int <- list("dd", "td",    0,    0,
                  "bu", "dd", "td", "td",
                     0, "bu", "dd", "td",
@@ -69,7 +69,7 @@ B0_int <- c(0.5, -0.3,  0.0,  0.0,
             0.0, -0.2,  0.6, -0.3,
             0.0,  0.3,  0.2,  0.7)
 
-## 2 basal prey (eg, starfish > snails > barnacles = mussels)
+## 2 basal prey (eg, starfish > snails > [barnacles = mussels])
 topo_bas <- list("dd", "td",    0, "td",
                  "bu", "dd", "td", "td",
                     0, "bu", "dd", "td",
@@ -107,18 +107,20 @@ for(ii in seq(1,nrow(grid))) {
   proc_var_true <- grid$pro_sd[ii]^2
   obs_var_true <- grid$obs_sd[ii]^2
 
-  ## get correct B matrix
+  ## get correct B matrix & topology
   if(grid$food_web[ii] == "linear") {
-    Bmat <- matrix(B0_lfc, n_species, n_species, byrow = TRUE)
-    topo <- matrix(topo_lfc, n_species, n_species, byrow = TRUE)
+    B_vals <- B0_lfc
+    B_topo <- topo_lfc
   } else if(grid$food_web[ii] == "2_prey") {
-    Bmat <- matrix(B0_int, n_species, n_species, byrow = TRUE)
-    topo <- matrix(topo_int, n_species, n_species, byrow = TRUE)
+    B_vals <- B0_int
+    B_topo <- topo_int
   } else {
-    Bmat <- matrix(B0_bas, n_species, n_species, byrow = TRUE)
-    topo <- matrix(topo_bas, n_species, n_species, byrow = TRUE)
+    B_vals <- B0_bas
+    B_topo <- topo_bas
   }
-
+  Bmat <- matrix(B_vals, n_species, n_species, byrow = TRUE)
+  topo <- matrix(B_topo, n_species, n_species, byrow = TRUE)
+  
   ## simulate process. var_QX is process error on states.
   ## var_QB is process var on B -- ignored for static B models.
   sim <- simTVVAR(Bt = Bmat,
@@ -154,11 +156,13 @@ for(ii in seq(1,nrow(grid))) {
   row_indx_pos <- matrix(rep(seq_len(nrow(yy)), ncol(yy)), nrow(yy), ncol(yy))[!is.na(yy)]
   col_indx_pos <- matrix(sort(rep(seq_len(ncol(yy)), nrow(yy))), nrow(yy), ncol(yy))[!is.na(yy)]
   n_pos <- length(row_indx_pos)
+  
   ## indices for NA values
   row_indx_na <- matrix(rep(seq_len(nrow(yy)), ncol(yy)), nrow(yy), ncol(yy))[is.na(yy)]
   col_indx_na <- matrix(sort(rep(seq_len(ncol(yy)), nrow(yy))), nrow(yy), ncol(yy))[is.na(yy)]
   n_na <- length(row_indx_na)
 
+  ## data without NA
   yy <- yy[!is.na(yy)]
 
   ## data list for Stan
