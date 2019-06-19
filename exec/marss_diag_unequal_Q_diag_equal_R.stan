@@ -8,7 +8,6 @@ data {
   // vectors
   int id_q[n_spp];                 // IDs for proc SD
   // matrices
-  matrix[n_obs,n_year] yy;       // data
   int<lower=0> rc_off[n_off,2];  // indices of non-zero off-diags
   matrix<lower=0,upper=1>[n_obs,n_spp] Zmat;
   int<lower=0> n_pos; // number of non-missing observations
@@ -17,6 +16,7 @@ data {
   int<lower=0> n_na; // number of missing observations
   int<lower=0> row_indx_na[n_na];
   int<lower=0> col_indx_na[n_na];
+  real yy[n_pos];       // data
 }
 parameters {
   real<lower=0> SD_obs;
@@ -51,7 +51,7 @@ transformed parameters {
   }
   // Deal with missing and non-missing values separately
   for(i in 1:n_pos) {
-    yymiss[row_indx_pos[i], col_indx_pos[i]] = yy[row_indx_pos[i], col_indx_pos[i]];
+    yymiss[row_indx_pos[i], col_indx_pos[i]] = yy[i];
   }
   // Include missing observations
   if(n_na > 0) {
