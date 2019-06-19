@@ -124,11 +124,11 @@ for(ii in seq(1,nrow(grid))) {
   )
 
   ## fit model
-  fit <- stan(file = file.path(stan_dir, "marss_diag_unequal_Q_diag_equal_R.stan"),
+  fit <- try(stan(file = file.path(stan_dir, "marss_diag_unequal_Q_diag_equal_R.stan"),
               data = dat,
               pars = c("Bmat", "SD_proc", "SD_obs", "xx"),
               control = list(max_treedepth = 25, adapt_delta = 0.99),
-              iter = 1000, chains = 3)
+              iter = 1000, chains = 3, refresh=0), silent=TRUE)
 
   ## save results to a file
   saveRDS(fit, file = paste0("results/raw_models/run_", ii, ".rds"))
