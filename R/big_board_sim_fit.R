@@ -42,10 +42,11 @@ n_toss <- 20
 ## stan options
 stan_model <- "marss_diag_unequal_Q_diag_equal_R.stan"
 stan_ctrl <- list(max_treedepth = 25, adapt_delta = 0.99)
-stan_mcmc <- list(iter = 10, chains = 3, refresh = 0)
+stan_mcmc <- list(iter = 1000, chains = 3, refresh = 0)
 
 ## interaction matrices (B)
-## index 1 is base; 2 & 3 are intermediate; 4 is top
+## index 1 is bottom of food web; 4 is top
+
 ## linear food chain (eg, phyto -> zoop -> minnows -> bass)
 topo_lfc <- list("dd", "td",    0,    0,
                  "bu", "dd", "td",    0,
