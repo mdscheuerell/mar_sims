@@ -25,7 +25,7 @@ parameters {
   vector<lower=0>[n_q] SD_proc;           // proc SD
   // vector[n_spp] X0;                    // initial states
   matrix[n_spp,n_year] xx;       // states
-  real ymiss[n_na];
+  vector[n_na] ymiss;
 }
 transformed parameters {
   // cov matrix
@@ -61,23 +61,24 @@ transformed parameters {
   }
 }
 model {
-  // priors
-  // intial states
-  // X0 ~ normal(0,1);
+  // PRIORS
+  // initial state
+  xx[,1] ~ normal(0,5);
   // process SD's
-  for(i in 1:n_q) {
-  	SD_proc[i] ~ student_t(3,0,2);
-  }
+  SD_proc ~ student_t(3,0,2);
   // obs SD
   SD_obs ~ student_t(3,0,2);
   // B matrix
   // diagonal
-  Bdiag ~ beta(1.05,1.05);
+  Bdiag ~ beta(1.5,1.5);
   // off-diagonals
   Boffd ~ normal(0,1);
-  // likelihood
+  // missing obs
+  ymiss ~ normal(0,5);
+  // LIKELIHOOD
+  (yymiss[,1] - Zmat * xx[,1]) / SD_obs ~ std_normal();
   for(t in 2:n_year) {
     col(xx,t) ~ multi_normal(Bmat * col(xx,t-1), QQ);
-    col(yymiss,t) ~ normal(Zmat * col(xx,t), SD_obs);
+    (yymiss[,t] - Zmat * xx[,t]) / SD_obs ~ std_normal();
   }
 }
