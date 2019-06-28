@@ -41,7 +41,7 @@ transformed parameters {
   }
   // cov matrix
   for(i in 1:n_spp) {
-  	QQ[i,i] = SD_proc[id_q[i]];
+  	QQ[i,i] = SD_proc[id_q[i]]^2;
   }
   for(i in 1:(n_spp-1)) {
   	for(j in (i+1):n_spp) {
