@@ -63,18 +63,18 @@ transformed parameters {
 model {
   // PRIORS
   // initial state
-  xx[,1] ~ normal(0,5);
+  xx[,1] ~ normal(0,0.5);
   // process SD's
-  SD_proc ~ student_t(3,0,2);
+  SD_proc ~ normal(0,1);
   // obs SD
-  SD_obs ~ student_t(3,0,2);
+  SD_obs ~ normal(0,1);
   // B matrix
   // diagonal
   Bdiag ~ beta(1.5,1.5);
   // off-diagonals
   Boffd ~ normal(0,1);
   // missing obs
-  ymiss ~ normal(0,5);
+  ymiss ~ normal(0,1);
   // LIKELIHOOD
   (yymiss[,1] - Zmat * xx[,1]) / SD_obs ~ std_normal();
   for(t in 2:n_year) {
