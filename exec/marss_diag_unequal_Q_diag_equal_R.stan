@@ -65,9 +65,9 @@ model {
   // initial state
   xx[,1] ~ normal(0,0.5);
   // process SD's
-  SD_proc ~ normal(0,1);
+  SD_proc ~ normal(0,0.5);
   // obs SD
-  SD_obs ~ normal(0,1);
+  SD_obs ~ normal(0,0.5);
   // B matrix
   // diagonal
   Bdiag ~ beta(1.5,1.5);
