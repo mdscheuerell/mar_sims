@@ -42,7 +42,7 @@ n_toss <- 20
 ## stan options
 stan_model <- "marss_diag_unequal_Q_diag_equal_R.stan"
 stan_ctrl <- list(max_treedepth = 25, adapt_delta = 0.99)
-stan_mcmc <- list(iter = 1000, chains = 3, refresh = 0)
+stan_mcmc <- list(iter = 3000, chains = 3, refresh = 0)
 
 ## interaction matrices (B)
 ## index 1 is bottom of food web; 4 is top
@@ -102,8 +102,8 @@ for(ii in seq(1,nrow(grid))) {
   n_time <- grid$ts_length[ii] + n_toss
 
   ## proc & obs var
-  proc_var_true <- grid$pro_sd[ii]^2
-  obs_var_true <- grid$obs_sd[ii]^2
+  proc_var_true <- grid$pro_sd[ii]
+  obs_var_true <- grid$obs_sd[ii]
 
   ## get correct B matrix & topology
   if(grid$food_web[ii] == "linear") {
@@ -129,7 +129,7 @@ for(ii in seq(1,nrow(grid))) {
   sim <- simTVVAR(Bt = Bmat,
                   topo = topo,
                   TT = n_time,
-                  var_QX = proc_var_true,
+                  var_QX = proc_var_true^2,
                   cov_QX = 0,
                   var_QB = 0,
                   cov_QB = 0)
