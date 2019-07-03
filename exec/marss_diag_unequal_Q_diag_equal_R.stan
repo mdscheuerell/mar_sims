@@ -76,11 +76,12 @@ model {
   // missing obs
   ymiss ~ normal(0,1);
   // LIKELIHOOD
-  //(yymiss[,1] - Zmat * xx[,1]) / SD_obs ~ std_normal();
-  yymiss[,1] ~ normal(Zmat * xx[,1], SD_obs);
+  // yymiss[,1] ~ normal(Zmat * xx[,1], SD_obs);
   for(t in 2:n_year) {
     col(xx,t) ~ multi_normal(Bmat * col(xx,t-1), QQ);
-    //(yymiss[,t] - Zmat * xx[,t]) / SD_obs ~ std_normal();
-    yymiss[,t] ~ normal(Zmat * xx[,t], SD_obs);
+    // yymiss[,t] ~ normal(Zmat * xx[,t], SD_obs);
   }
+  // because Z = I and v_t are IID
+  to_vector(yymiss) ~ normal(to_vector(xx), SD_obs);
 }
+
