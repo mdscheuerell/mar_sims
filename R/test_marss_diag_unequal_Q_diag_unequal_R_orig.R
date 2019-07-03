@@ -70,6 +70,15 @@ id_q <- seq(4)
 n_r <- length(unique(obs_var_true))
 id_r <- c(1,1,2,2)
 
+# indices of positive values - Stan can't handle NAs
+row_indx_pos <- matrix(rep(seq_len(nrow(xx)), ncol(xx)), nrow(xx), ncol(xx))[!is.na(xx)]
+col_indx_pos <- matrix(sort(rep(seq_len(ncol(xx)), nrow(xx))), nrow(xx), ncol(xx))[!is.na(xx)]
+n_pos <- length(row_indx_pos)
+
+row_indx_na <- matrix(rep(seq_len(nrow(xx)), ncol(xx)), nrow(xx), ncol(xx))[is.na(xx)]
+col_indx_na <- matrix(sort(rep(seq_len(ncol(xx)), nrow(xx))), nrow(xx), ncol(xx))[is.na(xx)]
+n_na <- length(row_indx_na)
+
 ## data list for Stan
 dat <- list(
   n_year = n_year-20,
@@ -82,7 +91,13 @@ dat <- list(
   Zmat = diag(n_species),
   yy = xx,
   n_off = n_off,
-  rc_off = rc_off
+  rc_off = rc_off,
+  n_na = n_na,
+  row_indx_na = row_indx_na,
+  col_indx_na = col_indx_na,
+  n_pos = n_pos,
+  row_indx_pos = row_indx_pos,
+  col_indx_pos = col_indx_pos
 )
 
 ## fit model

@@ -8,9 +8,15 @@ data {
   // vectors
   int id_q[n_spp];                 // IDs for proc SD
   // matrices
-  matrix[n_obs,n_year] yy;       // data
   int<lower=0> rc_off[n_off,2];  // indices of non-zero off-diags
   matrix<lower=0,upper=1>[n_obs,n_spp] Zmat;
+  int<lower=0> n_pos; // number of non-missing observations
+  int<lower=0> row_indx_pos[n_pos];
+  int<lower=0> col_indx_pos[n_pos];
+  int<lower=0> n_na; // number of missing observations
+  int<lower=0> row_indx_na[n_na];
+  int<lower=0> col_indx_na[n_na];
+  real yy[n_pos];       // data
 }
 parameters {
   real<lower=0> SD_obs;
@@ -18,13 +24,15 @@ parameters {
   vector<lower=0,upper=1>[n_spp] Bdiag;   // diag of B
   vector<lower=0>[n_q] SD_proc;           // proc SD
   // vector[n_spp] X0;                    // initial states
-  matrix[n_spp,n_year] xx;       // states  
+  matrix[n_spp,n_year] xx;       // states
+  vector[n_na] ymiss;
 }
 transformed parameters {
   // cov matrix
   cov_matrix[n_spp] QQ;
   // B matrix
   matrix[n_spp,n_spp] Bmat;
+  matrix[n_obs,n_year] yymiss;
   // diagonal
   Bmat = diag_matrix(Bdiag);
   // off-diagonals
@@ -33,7 +41,7 @@ transformed parameters {
   }
   // cov matrix
   for(i in 1:n_spp) {
-  	QQ[i,i] = SD_proc[id_q[i]];
+  	QQ[i,i] = SD_proc[id_q[i]]^2;
   }
   for(i in 1:(n_spp-1)) {
   	for(j in (i+1):n_spp) {
@@ -41,25 +49,38 @@ transformed parameters {
   	  QQ[j,i] = 0;
   	}
   }
+  // Deal with missing and non-missing values separately
+  for(i in 1:n_pos) {
+    yymiss[row_indx_pos[i], col_indx_pos[i]] = yy[i];
+  }
+  // Include missing observations
+  if(n_na > 0) {
+    for(i in 1:n_na) {
+      yymiss[row_indx_na[i], col_indx_na[i]] = ymiss[i];
+    }
+  }
 }
 model {
-  // priors
-  // intial states
-  // X0 ~ normal(0,1);
+  // PRIORS
+  // initial state
+  xx[,1] ~ normal(0,0.5);
   // process SD's
-  for(i in 1:n_q) {
-  	SD_proc[i] ~ cauchy(0, 5);
-  }
+  SD_proc ~ normal(0,0.5);
   // obs SD
-  SD_obs ~ cauchy(0, 5);
+  SD_obs ~ normal(0,0.5);
   // B matrix
   // diagonal
-  Bdiag ~ beta(1.05,1.05);
+  Bdiag ~ beta(1.5,1.5);
   // off-diagonals
-  Boffd ~ normal(0,10);
-  // likelihood
+  Boffd ~ normal(0,1);
+  // missing obs
+  ymiss ~ normal(0,1);
+  // LIKELIHOOD
+  //(yymiss[,1] - Zmat * xx[,1]) / SD_obs ~ std_normal();
+  yymiss[,1] ~ normal(Zmat * xx[,1], SD_obs);
   for(t in 2:n_year) {
     col(xx,t) ~ multi_normal(Bmat * col(xx,t-1), QQ);
-    col(yy,t) ~ normal(Zmat * col(xx,t), SD_obs);
+    //(yymiss[,t] - Zmat * xx[,t]) / SD_obs ~ std_normal();
+    yymiss[,t] ~ normal(Zmat * xx[,t], SD_obs);
   }
 }

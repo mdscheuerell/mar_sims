@@ -78,6 +78,15 @@ n_r <- length(unique(obs_var_true))
 id_r <- c(1,1,2,2)
 # id_r <- rep(1,4)
 
+# indices of positive values - Stan can't handle NAs
+row_indx_pos <- matrix(rep(seq_len(nrow(xx)), ncol(xx)), nrow(xx), ncol(xx))[!is.na(xx)]
+col_indx_pos <- matrix(sort(rep(seq_len(ncol(xx)), nrow(xx))), nrow(xx), ncol(xx))[!is.na(xx)]
+n_pos <- length(row_indx_pos)
+
+row_indx_na <- matrix(rep(seq_len(nrow(xx)), ncol(xx)), nrow(xx), ncol(xx))[is.na(xx)]
+col_indx_na <- matrix(sort(rep(seq_len(ncol(xx)), nrow(xx))), nrow(xx), ncol(xx))[is.na(xx)]
+n_na <- length(row_indx_na)
+
 ## data list for Stan
 dat <- list(
   n_year = n_time-n_toss,
@@ -97,7 +106,7 @@ dat <- list(
 initf <- function(chain_id = 1) {
   list(Bdiag = runif(n_spp, 0.5, 0.7), Boffd = runif(n_off, -0.2, 0.2),
        SD_proc=runif(n_q, 0.1,0.2), SD_obs = runif(n_r, 0,0.2))
-} 
+}
 
 ## list of lists for initial values
 n_chains <- 4
