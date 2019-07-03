@@ -194,7 +194,9 @@ for(ii in seq(1,nrow(grid))) {
                   data = dat,
                   pars = c("Bmat", "SD_proc", "SD_obs", "xx"),
                   control = stan_ctrl,
-                  iter = stan_mcmc$iter, chains = stan_mcmc$chains, refresh = stan_mcmc$refresh),
+                  iter = stan_mcmc$iter, 
+                  chains = stan_mcmc$chains, 
+                  refresh = stan_mcmc$refresh),
              silent=TRUE)
   
   ## save raw results to a file
@@ -211,3 +213,16 @@ for(ii in seq(1,nrow(grid))) {
   saveRDS(post_estimates, file = file.path(res_dir, "posterior_summaries.rds"))
   
 }
+
+
+g = group_by(posterior_summaries_parII[grep("Bmat",rownames(posterior_summaries_parII)),], iter) %>%
+  summarize(m = max(Rhat,na.rm=T))
+
+g1 = group_by(posterior_summaries_parII[grep("SD_proc",rownames(posterior_summaries_parII)),], iter) %>%
+  summarize(m = max(Rhat,na.rm=T))
+
+g2 = group_by(posterior_summaries_parII[grep("SD_obs",rownames(posterior_summaries_parII)),], iter) %>%
+  summarize(m = max(Rhat,na.rm=T))
+
+g3 = group_by(posterior_summaries_parII[grep("xx",rownames(posterior_summaries_parII)),], iter) %>%
+  summarize(m = max(Rhat,na.rm=T))
