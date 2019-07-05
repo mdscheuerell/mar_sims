@@ -41,8 +41,8 @@ n_toss <- 20
 
 ## stan options
 stan_model <- "marss_diag_unequal_Q_diag_equal_R.stan"
-stan_ctrl <- list(max_treedepth = 25, adapt_delta = 0.99)
-stan_mcmc <- list(iter = 4000, warmup = 3000, chains = 3, refresh = 0)
+stan_ctrl <- list(max_treedepth = 25, adapt_delta = 0.999)
+stan_mcmc <- list(iter = 6000, warmup = 3000, chains = 4, thin = 10, refresh = 0)
 
 ## interaction matrices (B)
 ## index 1 is bottom of food web; 4 is top
@@ -89,11 +89,14 @@ post_estimates <- NULL
 n_species <- sqrt(length(B0_lfc))
 
 ## initial values; only set for some params/states
-# init_vals <- function(chain_id = 1) {
-#   list(SD_obs = 0.2,
-#        SD_proc = 1.6)
-# } 
-# init_ll <- lapply(1:stan_mcmc$chains, function(id) init_vals(chain_id = id))
+init_vals <- function(chain_id = 1, n_off, n_species, n_time, n_na) {
+  list(SD_obs = runif(1),
+       SD_proc = runif(1),
+       Boffd = runif(n_off, -0.5, 0.5),
+       Bdiag = runif(n_species),
+       xx = matrix(rnorm(n_species*n_time), n_species, n_time),
+       ymiss = rnorm(n_na))
+}
 
 
 ##-----------
@@ -197,15 +200,25 @@ for(ii in seq(1,nrow(grid))) {
     col_indx_na = col_indx_na
   )
 
+  ## initial values
+  init_ll <- lapply(1:stan_mcmc$chains,
+                    function(id) init_vals(chain_id = id,
+                                           n_off = n_off,
+                                           n_species = n_species,
+                                           n_time = grid$ts_length[ii],
+                                           n_na = n_na)
+  )
+  
   ## fit model
   fit <- try(stan(file = file.path(stan_dir, stan_model),
                   data = dat,
                   pars = c("Bmat", "SD_proc", "SD_obs", "xx"),
                   control = stan_ctrl,
-                  # init = init_ll,
+                  init = init_ll,
                   iter = stan_mcmc$iter,
                   warmup = stan_mcmc$warmup,
                   chains = stan_mcmc$chains,
+                  thin = stan_mcmc$thin,
                   refresh = stan_mcmc$refresh),
              silent=TRUE)
   
