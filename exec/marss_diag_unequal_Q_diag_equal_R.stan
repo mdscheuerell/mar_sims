@@ -19,19 +19,21 @@ data {
   real yy[n_pos];       // data
 }
 parameters {
-  // real<lower=0> SD_obs;
-  real<lower=1> SD_obs_infl;
+  real<lower=0> SD_obs;
   vector<lower=-1,upper=1>[n_off] Boffd;  // off-diags of B
   vector<lower=0,upper=1>[n_spp] Bdiag;   // diag of B
   // vector<lower=0>[n_q] SD_proc;           // proc SD
   real<lower=0> SD_proc;           // proc SD
-  // vector[n_spp] X0;                    // initial states
+  // cov_matrix[2] SD_mat;
+  // vector<lower=0>[2] SD_vec;
   matrix[n_spp,n_year] xx;       // states
-  vector[n_na] ymiss;
+  vector[n_na] ymiss;  // missing values
 }
 transformed parameters {
   // obs SD
-  real<lower=0> SD_obs;
+  // real<lower=0> SD_obs;
+  // real<lower=0> SD_proc;
+  // vector[2] SD_mean;
   // cov matrix
   // cov_matrix[n_spp] QQ;
   // B matrix
@@ -63,16 +65,20 @@ transformed parameters {
       yymiss[row_indx_na[i], col_indx_na[i]] = ymiss[i];
     }
   }
-  SD_obs = SD_obs_infl / 100;
+  // SD_mean[1] = 0;
+  // SD_mean[2] = 0;
+  // SD_obs = SD_vec[1];
+  // SD_proc = SD_vec[2];
 }
 model {
   // PRIORS
   // initial state
-  to_vector(xx) ~ normal(0,5);
+  xx[,1] ~ normal(0,5);
   // process SD's
   SD_proc ~ normal(0,1);
   // obs SD
-  // SD_obs ~ normal(0,0.5);
+  SD_obs ~ normal(0,1);
+  // SD_vec ~ multi_normal(SD_mean, SD_mat);
   // B matrix
   // diagonal
   // Bdiag ~ beta(1.2,1.2);
@@ -82,13 +88,9 @@ model {
   // missing obs
   ymiss ~ normal(0,5);
   // LIKELIHOOD
-  // (yymiss[,1] - Zmat * xx[,1]) ~ std_normal();
-  // yymiss[,1] ~ normal(xx[,1], SD_obs);
   for(t in 2:n_year) {
     xx[,t] ~ normal(Bmat * xx[,t-1], SD_proc);
     // col(xx,t) ~ multi_normal(Bmat * col(xx,t-1), QQ);
-    // (yymiss[,t] - Zmat * xx[,t]) ~ std_normal();
-    // yymiss[,t] ~ normal(xx[,t], SD_obs);
   }
   to_vector(yymiss) ~ normal(to_vector(xx), SD_obs);
 }
