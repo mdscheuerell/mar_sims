@@ -42,7 +42,7 @@ n_toss <- 20
 ## stan options
 stan_model <- "marss_diag_unequal_Q_diag_equal_R.stan"
 stan_ctrl <- list(max_treedepth = 25, adapt_delta = 0.99)
-stan_mcmc <- list(iter = 1000, chains = 3, refresh = 0)
+stan_mcmc <- list(iter = 4000, warmup = 3000, chains = 3, refresh = 0)
 
 ## interaction matrices (B)
 ## index 1 is bottom of food web; 4 is top
@@ -88,6 +88,17 @@ post_estimates <- NULL
 ## number of species
 n_species <- sqrt(length(B0_lfc))
 
+## initial values; only set for some params/states
+# init_vals <- function(chain_id = 1) {
+#   list(SD_obs = runif(1,0,1),
+#        `SD_proc[1]` = runif(1,0,1))
+# } 
+init_vals <- function(chain_id = 1) {
+  list(SD_obs = 0.2,
+       SD_proc = 1.6)
+} 
+init_ll <- lapply(1:stan_mcmc$chains, function(id) init_vals(chain_id = id))
+
 
 ##-----------
 ## sim & fit
@@ -102,8 +113,8 @@ for(ii in seq(1,nrow(grid))) {
   n_time <- grid$ts_length[ii] + n_toss
 
   ## proc & obs var
-  proc_var_true <- grid$pro_sd[ii]^2
-  obs_var_true <- grid$obs_sd[ii]^2
+  proc_sd_true <- grid$pro_sd[ii]
+  obs_sd_true <- grid$obs_sd[ii]
 
   ## get correct B matrix & topology
   if(grid$food_web[ii] == "linear") {
@@ -129,7 +140,7 @@ for(ii in seq(1,nrow(grid))) {
   sim <- simTVVAR(Bt = Bmat,
                   topo = topo,
                   TT = n_time,
-                  var_QX = proc_var_true,
+                  var_QX = proc_sd_true^2,
                   cov_QX = 0,
                   var_QB = 0,
                   cov_QB = 0)
@@ -138,14 +149,15 @@ for(ii in seq(1,nrow(grid))) {
   xx <- sim$states[,-seq(n_toss+1)]
 
   ## observations
-  yy <- xx + matrix(rnorm(n_species*(n_time-n_toss), 0, obs_var_true), n_species, n_time-n_toss)
-
+  yy <- xx + matrix(rnorm(n_species*(n_time-n_toss), 0, obs_sd_true), n_species, n_time-n_toss)
+  # yy <- t(scale(t(yy)))
+  
   ## number of proc SD's
-  n_q <- length(unique(proc_var_true))
+  n_q <- length(unique(proc_sd_true))
   id_q <- c(1,1,1,1)
 
   ## number of obs SD's
-  n_r <- length(unique(obs_var_true))
+  n_r <- length(unique(obs_sd_true))
   id_r <- c(1,1,1,1)
 
   ## remove missing data if that's an issue
@@ -181,12 +193,12 @@ for(ii in seq(1,nrow(grid))) {
     yy = yy,
     n_off = n_off,
     rc_off = rc_off,
-    n_pos,
-    row_indx_pos,
-    col_indx_pos,
-    n_na,
-    row_indx_na,
-    col_indx_na
+    n_pos= n_pos,
+    row_indx_pos = row_indx_pos,
+    col_indx_pos = col_indx_pos,
+    n_na = n_na,
+    row_indx_na = row_indx_na,
+    col_indx_na = col_indx_na
   )
 
   ## fit model
@@ -194,7 +206,9 @@ for(ii in seq(1,nrow(grid))) {
                   data = dat,
                   pars = c("Bmat", "SD_proc", "SD_obs", "xx"),
                   control = stan_ctrl,
-                  iter = stan_mcmc$iter, chains = stan_mcmc$chains, refresh = stan_mcmc$refresh),
+                  iter = stan_mcmc$iter, warmup = stan_mcmc$warmup,
+                  chains = stan_mcmc$chains, refresh = stan_mcmc$refresh,
+                  init = init_ll),
              silent=TRUE)
   
   ## save raw results to a file
