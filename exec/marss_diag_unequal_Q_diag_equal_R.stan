@@ -19,8 +19,8 @@ data {
   real yy[n_pos];       // data
 }
 parameters {
-  real<lower=0> SD_obs;
-  // real<lower=0> SD_obs_inv;
+  // real<lower=0> SD_obs;
+  real<lower=1> SD_obs_infl;
   vector<lower=-1,upper=1>[n_off] Boffd;  // off-diags of B
   vector<lower=0,upper=1>[n_spp] Bdiag;   // diag of B
   // vector<lower=0>[n_q] SD_proc;           // proc SD
@@ -30,6 +30,8 @@ parameters {
   vector[n_na] ymiss;
 }
 transformed parameters {
+  // obs SD
+  real<lower=0> SD_obs;
   // cov matrix
   // cov_matrix[n_spp] QQ;
   // B matrix
@@ -61,15 +63,16 @@ transformed parameters {
       yymiss[row_indx_na[i], col_indx_na[i]] = ymiss[i];
     }
   }
+  SD_obs = SD_obs_infl / 100;
 }
 model {
   // PRIORS
   // initial state
   to_vector(xx) ~ normal(0,5);
   // process SD's
-  // SD_proc ~ normal(0,1);
+  SD_proc ~ normal(0,1);
   // obs SD
-  // SD_obs ~ normal(1,5);
+  // SD_obs ~ normal(0,0.5);
   // B matrix
   // diagonal
   // Bdiag ~ beta(1.2,1.2);
@@ -89,9 +92,4 @@ model {
   }
   to_vector(yymiss) ~ normal(to_vector(xx), SD_obs);
 }
-// generated quantities {
-//   // obs sd
-//   real<lower=0> SD_obs;
-//   SD_obs = 1 / SD_obs_inv;
-// }
 
