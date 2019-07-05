@@ -20,16 +20,18 @@ data {
 }
 parameters {
   real<lower=0> SD_obs;
+  // real<lower=0> SD_obs_inv;
   vector<lower=-1,upper=1>[n_off] Boffd;  // off-diags of B
   vector<lower=0,upper=1>[n_spp] Bdiag;   // diag of B
-  vector<lower=0>[n_q] SD_proc;           // proc SD
+  // vector<lower=0>[n_q] SD_proc;           // proc SD
+  real<lower=0> SD_proc;           // proc SD
   // vector[n_spp] X0;                    // initial states
   matrix[n_spp,n_year] xx;       // states
   vector[n_na] ymiss;
 }
 transformed parameters {
   // cov matrix
-  cov_matrix[n_spp] QQ;
+  // cov_matrix[n_spp] QQ;
   // B matrix
   matrix[n_spp,n_spp] Bmat;
   matrix[n_obs,n_year] yymiss;
@@ -40,15 +42,15 @@ transformed parameters {
     Bmat[rc_off[i,1],rc_off[i,2]] = Boffd[i];
   }
   // cov matrix
-  for(i in 1:n_spp) {
-  	QQ[i,i] = SD_proc[id_q[i]]^2;
-  }
-  for(i in 1:(n_spp-1)) {
-  	for(j in (i+1):n_spp) {
-  	  QQ[i,j] = 0;
-  	  QQ[j,i] = 0;
-  	}
-  }
+  // for(i in 1:n_spp) {
+  // 	QQ[i,i] = SD_proc[id_q[i]]^2;
+  // }
+  // for(i in 1:(n_spp-1)) {
+  // 	for(j in (i+1):n_spp) {
+  // 	  QQ[i,j] = 0;
+  // 	  QQ[j,i] = 0;
+  // 	}
+  // }
   // Deal with missing and non-missing values separately
   for(i in 1:n_pos) {
     yymiss[row_indx_pos[i], col_indx_pos[i]] = yy[i];
@@ -63,22 +65,33 @@ transformed parameters {
 model {
   // PRIORS
   // initial state
-  xx[,1] ~ normal(0,0.5);
+  to_vector(xx) ~ normal(0,5);
   // process SD's
-  SD_proc ~ normal(0,0.5);
+  // SD_proc ~ normal(0,1);
   // obs SD
-  SD_obs ~ normal(0,0.5);
+  // SD_obs ~ normal(1,5);
   // B matrix
   // diagonal
-  Bdiag ~ beta(1.5,1.5);
+  // Bdiag ~ beta(1.2,1.2);
+  Bdiag ~ normal(0.5,1);
   // off-diagonals
   Boffd ~ normal(0,1);
   // missing obs
-  ymiss ~ normal(0,1);
+  ymiss ~ normal(0,5);
   // LIKELIHOOD
-  (yymiss[,1] - Zmat * xx[,1]) / SD_obs ~ std_normal();
+  // (yymiss[,1] - Zmat * xx[,1]) ~ std_normal();
+  // yymiss[,1] ~ normal(xx[,1], SD_obs);
   for(t in 2:n_year) {
-    col(xx,t) ~ multi_normal(Bmat * col(xx,t-1), QQ);
-    (yymiss[,t] - Zmat * xx[,t]) / SD_obs ~ std_normal();
+    xx[,t] ~ normal(Bmat * xx[,t-1], SD_proc);
+    // col(xx,t) ~ multi_normal(Bmat * col(xx,t-1), QQ);
+    // (yymiss[,t] - Zmat * xx[,t]) ~ std_normal();
+    // yymiss[,t] ~ normal(xx[,t], SD_obs);
   }
+  to_vector(yymiss) ~ normal(to_vector(xx), SD_obs);
 }
+// generated quantities {
+//   // obs sd
+//   real<lower=0> SD_obs;
+//   SD_obs = 1 / SD_obs_inv;
+// }
+
