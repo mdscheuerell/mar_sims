@@ -42,7 +42,7 @@ n_toss <- 20
 ## stan options
 stan_model <- "marss_diag_unequal_Q_diag_equal_R.stan"
 stan_ctrl <- list(max_treedepth = 25, adapt_delta = 0.999)
-stan_mcmc <- list(iter = 3000, warmup = 1000, chains = 4, thin = 10, refresh = 0)
+stan_mcmc <- list(iter = 10000, warmup = 5000, chains = 4, thin = 5, refresh = 0)
 
 ## interaction matrices (B)
 ## index 1 is bottom of food web; 4 is top
