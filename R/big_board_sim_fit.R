@@ -42,7 +42,7 @@ n_toss <- 20
 ## stan options
 stan_model <- "marss_diag_unequal_Q_diag_equal_R.stan"
 stan_ctrl <- list(max_treedepth = 25, adapt_delta = 0.999)
-stan_mcmc <- list(iter = 6000, warmup = 3000, chains = 4, thin = 10, refresh = 0)
+stan_mcmc <- list(iter = 6000, warmup = 1000, chains = 4, thin = 20, refresh = 0)
 
 ## interaction matrices (B)
 ## index 1 is bottom of food web; 4 is top
@@ -88,15 +88,27 @@ post_estimates <- NULL
 ## number of species
 n_species <- sqrt(length(B0_lfc))
 
-## initial values; only set for some params/states
+## initial values
 init_vals <- function(chain_id = 1, n_off, n_species, n_time, n_na) {
   list(SD_obs = runif(1),
        SD_proc = runif(1),
        Boffd = runif(n_off, -0.5, 0.5),
        Bdiag = runif(n_species),
-       xx = matrix(rnorm(n_species*n_time), n_species, n_time),
+       # xx = matrix(rnorm(n_species*n_time), n_species, n_time),
+       init_state = rnorm(4, 0, 5),
+       Z_proc = matrix(rnorm(n_species*n_time), n_species, n_time),
        ymiss = rnorm(n_na))
 }
+# init_vals <- function(chain_id = 1, n_off, n_species, n_time, n_na) {
+#   list(var_SD = runif(1),
+#        cov_SD = runif(1,-1,0),
+#        mean_SD = runif(1),
+#        SD_vec = runif(2),
+#        Boffd = runif(n_off, -0.5, 0.5),
+#        Bdiag = runif(n_species),
+#        xx = matrix(rnorm(n_species*n_time), n_species, n_time),
+#        ymiss = rnorm(n_na))
+# }
 
 
 ##-----------
@@ -207,7 +219,7 @@ for(ii in seq(1,nrow(grid))) {
                                            n_species = n_species,
                                            n_time = grid$ts_length[ii],
                                            n_na = n_na)
-  )
+                    )
   
   ## fit model
   fit <- try(stan(file = file.path(stan_dir, stan_model),
