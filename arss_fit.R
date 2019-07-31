@@ -22,8 +22,8 @@ stan_mcmc <- list(iter = 4000, warmup = 2000, chains = 4, thin = 10, refresh = 0
 
 ## initial values
 init_vals <- function(chain_id = 1, n_time) {
-  list(SD_obs = runif(1),
-       SD_proc = runif(1),
+  list(SD_obs = runif(1, 0.1, 1),
+       SD_proc = runif(1, 0.1, 1),
        phi = runif(1, 0.1, 0.9),
        init_state = rnorm(1),
        zz = rnorm(n_time)
@@ -33,7 +33,7 @@ init_vals <- function(chain_id = 1, n_time) {
 
 
 
-nn <- 100
+nn <- 200
 
 phi <- 0.7
 
@@ -41,7 +41,7 @@ SD_proc <- 0.4
 
 SD_obs <- 0.1
 
-init_state <- 0.5
+init_state <- 0
 
 xx <- ww <- rnorm(nn, 0, SD_proc)
 
