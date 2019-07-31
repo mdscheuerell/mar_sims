@@ -24,14 +24,13 @@ parameters {
   vector<lower=0,upper=1>[n_spp] Bdiag;   // diag of B
   // vector<lower=0>[n_q] SD_proc;           // proc SD
   real<lower=0> SD_proc;           // proc SD
-  vector[4] init_state;           // proc SD
-  matrix[n_spp,n_year] Z_proc;
+  // vector[4] init_state;           // proc SD
   // real<lower=0> var_SD;
   // real<upper=0> cov_SD;
   // cholesky_factor_corr[2] Lcorr;
   // real<lower=0> sigma;
   // vector[2] SD_vec;
-  // matrix[n_spp,n_year] xx;       // states
+  matrix[n_spp,n_year] xx;       // states
   vector[n_na] ymiss;  // missing values
 }
 transformed parameters {
@@ -46,7 +45,6 @@ transformed parameters {
   // B matrix
   matrix[n_spp,n_spp] Bmat;
   matrix[n_obs,n_year] yymiss;
-  matrix[n_spp,n_year] xx;       // states
   // diagonal
   Bmat = diag_matrix(Bdiag);
   // off-diagonals
@@ -83,19 +81,14 @@ transformed parameters {
   // sigma_SD[1,2] = cov_SD;
   // sigma_SD[2,1] = cov_SD;
   // sigma_SD[2,2] = var_SD;
-  xx[,1] = init_state;
-  for(t in 2:n_year) {
-    xx[,t] = Bmat * xx[,t-1] + SD_proc * Z_proc[,t];
-  }
 }
 model {
   // PRIORS
   // initial state
-  // xx[,1] ~ normal(0,5);
-  init_state ~ normal(0,5);
+  xx[,1] ~ normal(0,5);
+  // init_state ~ normal(0,5);
   // process SD's
-  // SD_proc ~ normal(0,1);
-  to_vector(Z_proc) ~ normal(0,1);
+  SD_proc ~ normal(0,1);
   // obs SD
   SD_obs ~ normal(0,1);
   // SD_vec ~ multi_normal_cholesky(mean_SD, diag_pre_multiply(sigma_vec, Lcorr));
@@ -110,12 +103,11 @@ model {
   // missing obs
   ymiss ~ normal(0,5);
   // LIKELIHOOD
-  // for(t in 2:n_year) {
-  //   xx[,t] ~ normal(Bmat * xx[,t-1], SD_proc);
-  //   // xx[,t] = Bmat * xx[,t-1] + SD_proc * Z_proc;
-  //   // col(xx,t) ~ multi_normal(Bmat * col(xx,t-1), QQ);
-  // }
-  // to_vector(yymiss) ~ normal(to_vector(xx), SD_obs);
+  for(t in 2:n_year) {
+    xx[,t] ~ normal(Bmat * xx[,t-1], SD_proc);
+    // xx[,t] = Bmat * xx[,t-1] + SD_proc * Z_proc;
+    // col(xx,t) ~ multi_normal(Bmat * col(xx,t-1), QQ);
+  }
   to_vector(yymiss) ~ normal(to_vector(xx), SD_obs);
 }
 
