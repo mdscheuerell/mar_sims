@@ -15,11 +15,13 @@ parameters {
 model {
   // PRIORS
   // process SD's
-  SD_proc ~ normal(0, 1);
+  // SD_proc ~ normal(0, 1);
+  SD_proc ~ uniform(0.1, 0.5);
   // obs SD
-  SD_obs ~ normal(0, 1);
+  // SD_obs ~ normal(0, 1);
+  SD_obs ~ uniform(0.1, 0.5);
   // initial state
-  xx[1] ~ normal(0, 1/(1 - phi^2));
+  xx[1] ~ normal(0, SD_proc/(1 - phi^2));
   // AR(1) coef
   phi ~ normal(0.5, 5);
   // LIKELIHOOD
