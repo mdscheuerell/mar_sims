@@ -5,10 +5,10 @@ data {
   vector[n_year] yy;
 }
 parameters {
-  // obs SD
-  real<lower=0> SD_obs;
   // proc SD
   real<lower=0> SD_proc;
+  // obs SD
+  real<lower=0> SD_obs;
   // AR(1) coef
   real<lower=0, upper=1> phi;
   // initial state
@@ -37,7 +37,7 @@ model {
   // AR(1) coef
   phi ~ normal(0.5, 2);
   // initial state
-  init_state ~ normal(0, 1/(1 - phi^2));
+  init_state ~ normal(0, SD_proc/(1 - phi^2));
   // LIKELIHOOD
   yy ~ normal(xx, SD_obs);
 }
