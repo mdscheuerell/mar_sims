@@ -213,8 +213,8 @@ for(ii in seq(1,nrow(grid))) {
     col_indx_na = col_indx_na,
     pro_mu = grid$pro_sd[ii],
     pro_cv = grid$pro_CV[ii],
-    obs_mu = grid$obs_CV[ii],
-    obs_mu = grid$obs_sd[ii]
+    obs_mu = grid$obs_sd[ii],
+    obs_cv = grid$obs_CV[ii]
   )
 
   ## initial values
