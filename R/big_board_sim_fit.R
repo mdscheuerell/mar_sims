@@ -40,9 +40,9 @@ int_types <- c("dd", "td", "bu", "cf")
 n_toss <- 20
 
 ## stan options
-stan_model <- "marss_diag_unequal_Q_diag_equal_R.stan"
+stan_model <- "marss_diag_unequal_Q_diag_equal_prior_R.stan"
 stan_ctrl <- list(max_treedepth = 25, adapt_delta = 0.999)
-stan_mcmc <- list(iter = 10000, warmup = 5000, chains = 4, thin = 5, refresh = 0)
+stan_mcmc <- list(iter = 2000, warmup = 1000, chains = 3, thin = 1, refresh = 0)
 
 ## interaction matrices (B)
 ## index 1 is bottom of food web; 4 is top
@@ -141,12 +141,12 @@ for(ii in seq(1,nrow(grid))) {
   }
   Bmat <- matrix(B_vals, n_species, n_species, byrow = TRUE)
   topo <- matrix(B_topo, n_species, n_species, byrow = TRUE)
-  
+
   ## row/col indices for off-diagonals
   rc_off <- do.call(rbind, sapply(int_types[-1], function(x) which(topo == x, arr.ind = TRUE)))
   ## number of non-zero off-diagonals
   n_off <- nrow(rc_off)
-  
+
   ## simulate process. var_QX is process error on states.
   ## var_QB is process var on B -- ignored for static B models.
   sim <- simTVVAR(Bt = Bmat,
@@ -163,7 +163,7 @@ for(ii in seq(1,nrow(grid))) {
   ## observations
   yy <- xx + matrix(rnorm(n_species*(n_time-n_toss), 0, obs_sd_true), n_species, n_time-n_toss)
   # yy <- t(scale(t(yy)))
-  
+
   ## number of proc SD's
   n_q <- length(unique(proc_sd_true))
   id_q <- c(1,1,1,1)
@@ -183,7 +183,7 @@ for(ii in seq(1,nrow(grid))) {
   row_indx_pos <- matrix(rep(seq_len(nrow(yy)), ncol(yy)), nrow(yy), ncol(yy))[!is.na(yy)]
   col_indx_pos <- matrix(sort(rep(seq_len(ncol(yy)), nrow(yy))), nrow(yy), ncol(yy))[!is.na(yy)]
   n_pos <- length(row_indx_pos)
-  
+
   ## indices for NA values
   row_indx_na <- matrix(rep(seq_len(nrow(yy)), ncol(yy)), nrow(yy), ncol(yy))[is.na(yy)]
   col_indx_na <- matrix(sort(rep(seq_len(ncol(yy)), nrow(yy))), nrow(yy), ncol(yy))[is.na(yy)]
@@ -210,7 +210,11 @@ for(ii in seq(1,nrow(grid))) {
     col_indx_pos = col_indx_pos,
     n_na = n_na,
     row_indx_na = row_indx_na,
-    col_indx_na = col_indx_na
+    col_indx_na = col_indx_na,
+    pro_mu = grid$pro_sd[ii],
+    pro_cv = grid$pro_CV[ii],
+    obs_mu = grid$obs_CV[ii],
+    obs_mu = grid$obs_sd[ii]
   )
 
   ## initial values
@@ -221,7 +225,7 @@ for(ii in seq(1,nrow(grid))) {
                                            n_time = grid$ts_length[ii],
                                            n_na = n_na)
                     )
-  
+
   ## fit model
   fit <- try(stan(file = file.path(stan_dir, stan_model),
                   data = dat,
@@ -234,7 +238,7 @@ for(ii in seq(1,nrow(grid))) {
                   thin = stan_mcmc$thin,
                   refresh = stan_mcmc$refresh),
              silent=TRUE)
-  
+
   ## save raw results to a file
   saveRDS(fit, file = file.path(raw_dir, paste0("run_", ii, ".rds")))
 
@@ -247,7 +251,7 @@ for(ii in seq(1,nrow(grid))) {
 
   ## save table of posterior summaries
   saveRDS(post_estimates, file = file.path(res_dir, "posterior_summaries.rds"))
-  
+
 }
 
 
