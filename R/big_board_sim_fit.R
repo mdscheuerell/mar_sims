@@ -1,6 +1,8 @@
 
+# SK - change this next line
+this_batch = 1 # 1, 2, 3
 
-this_batch = 3 # 1, 2, 3
+
 n_batch = 3 # max - 3 by default
 
 ##-------------------
