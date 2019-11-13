@@ -1,5 +1,8 @@
 
 
+this_batch = 3 # 1, 2, 3
+n_batch = 3 # max - 3 by default
+
 ##-------------------
 ## initialize & load
 ##-------------------
@@ -28,7 +31,8 @@ raw_dir <- here("results/raw_models")
 
 ## load grid of sim options
 grid <- readRDS("grid.rds")
-
+grid$batch = sort(rep(1:n_batch, ceiling(nrow(grid)/batch)))[1:nrow(grid)]
+  
 ##-----------------
 ## specify options
 ##-----------------
@@ -56,27 +60,7 @@ B0_lfc <- c(0.5, -0.1,  0.0,  0.0,
             0.3,  0.6, -0.2,  0.0,
             0.0,  0.2,  0.7, -0.3,
             0.0,  0.0,  0.1,  0.8)
-
-## 2 intermediate prey (eg, phyto -> [Daphnia = Bosmina] -> alewife)
-topo_int <- list("dd", "td",    0,    0,
-                 "bu", "dd", "td", "td",
-                    0, "bu", "dd", "td",
-                    0, "bu", "bu", "dd")
-B0_int <- c(0.5, -0.3,  0.0,  0.0,
-            0.1,  0.6, -0.2, -0.2,
-            0.0, -0.2,  0.6, -0.3,
-            0.0,  0.3,  0.2,  0.7)
-
-## 2 basal prey (eg, [barnacles = mussels] -> snails -> starfish)
-topo_bas <- list("dd", "td",    0, "td",
-                 "bu", "dd", "td", "td",
-                    0, "bu", "dd", "td",
-                 "bu", "bu", "bu", "dd")
-B0_bas <- c(0.5, -0.1,  0.0, -0.3,
-           -0.3,  0.5, -0.2, -0.2,
-            0.0,  0.2,  0.6, -0.1,
-            0.3,  0.2,  0.2,  0.7)
-
+B0_mat = matrix(B0_lfc,4,4)
 
 ##-------
 ## setup
@@ -116,7 +100,7 @@ init_vals <- function(chain_id = 1, n_off, n_species, n_time, n_na) {
 ## sim & fit
 ##-----------
 
-for(ii in seq(1,nrow(grid))) {
+for(ii in which(grid$batch == this_batch)) {
 
   ## set seed
   set.seed(grid$seed[ii])
@@ -192,6 +176,13 @@ for(ii in seq(1,nrow(grid))) {
   ## data without NA
   yy <- yy[!is.na(yy)]
 
+  ## get mean of B elemenets
+  b_mu = rep(0, nrow(rc_off))
+  b_sd = rep(0, nrow(rc_off))  
+  for(jj in 1:nrow(rc_off)) {
+    b_mu[jj] = B0_mat[rc_off[jj,1],rc_off[jj,2]]
+    b_sd[jj] = grid$b_CV[ii]*b_mu[jj]
+  }
   ## data list for Stan
   dat <- list(
     n_year = n_time-n_toss,
@@ -214,7 +205,11 @@ for(ii in seq(1,nrow(grid))) {
     pro_mu = grid$pro_sd[ii],
     pro_cv = grid$pro_CV[ii],
     obs_mu = grid$obs_sd[ii],
-    obs_cv = grid$obs_CV[ii]
+    obs_cv = grid$obs_CV[ii],
+    b_mu = b_mu,
+    b_sd = abs(b_sd),
+    b_mu_diag = diag(B0_mat),
+    b_sd_diag = diag(B0_mat)*grid$b_CV[ii]
   )
 
   ## initial values
@@ -250,19 +245,18 @@ for(ii in seq(1,nrow(grid))) {
   post_estimates <- rbind(post_estimates, pars)
 
   ## save table of posterior summaries
-  saveRDS(post_estimates, file = file.path(res_dir, "posterior_summaries.rds"))
-
+  saveRDS(post_estimates, file = file.path(res_dir, paste0("posterior_summaries_",this_batch,".rds")))
 }
 
 
-g = group_by(posterior_summaries_parII[grep("Bmat",rownames(posterior_summaries_parII)),], iter) %>%
-  summarize(m = max(Rhat,na.rm=T))
+#g = group_by(posterior_summaries_parII[grep("Bmat",rownames(posterior_summaries_parII)),], iter) %>%
+#  summarize(m = max(Rhat,na.rm=T))
 
-g1 = group_by(posterior_summaries_parII[grep("SD_proc",rownames(posterior_summaries_parII)),], iter) %>%
-  summarize(m = max(Rhat,na.rm=T))
+#g1 = group_by(posterior_summaries_parII[grep("SD_proc",rownames(posterior_summaries_parII)),], iter) %>%
+#  summarize(m = max(Rhat,na.rm=T))
 
-g2 = group_by(posterior_summaries_parII[grep("SD_obs",rownames(posterior_summaries_parII)),], iter) %>%
-  summarize(m = max(Rhat,na.rm=T))
+#g2 = group_by(posterior_summaries_parII[grep("SD_obs",rownames(posterior_summaries_parII)),], iter) %>%
+#  summarize(m = max(Rhat,na.rm=T))
 
-g3 = group_by(posterior_summaries_parII[grep("xx",rownames(posterior_summaries_parII)),], iter) %>%
-  summarize(m = max(Rhat,na.rm=T))
+#g3 = group_by(posterior_summaries_parII[grep("xx",rownames(posterior_summaries_parII)),], iter) %>%
+#  summarize(m = max(Rhat,na.rm=T))

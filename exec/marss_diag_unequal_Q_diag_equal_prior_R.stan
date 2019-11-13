@@ -20,6 +20,10 @@ data {
   real pro_cv; // cv of process variance prior
   real obs_mu; // mean of obs variance prior
   real obs_cv; // cv of obs variance prior
+  real b_mu[6]; // prior on mean of offdiagonal
+  real b_sd[6]; // prior on sd offdiagonal 
+  real b_mu_diag[4];// prior on mean of diagonal
+  real b_sd_diag[4];// prior on sd offdiagonal 
 }
 parameters {
   real<lower=0> SD_obs;
@@ -70,9 +74,11 @@ model {
   // obs SD
   SD_obs ~ normal(obs_mu,obs_mu*obs_cv);
   // B diagonal
-  Bdiag ~ normal(0.5,1);
+  //Bdiag ~ normal(0.5,1);
+  for(i in 1:4) Bdiag[i] ~ normal(b_mu_diag[i],b_sd_diag[i]);
   // B off-diagonals
-  Boffd ~ normal(0,1);
+  //Boffd ~ normal(0,1);
+  for(i in 1:6) Boffd[i] ~ normal(b_mu[i],b_sd[i]);
   // missing obs
   ymiss ~ normal(0,5);
   // LIKELIHOOD

@@ -1,17 +1,30 @@
 
 # Proposed simulation framework / datasets
-
 set.seed(123)
-replicates = 1 # number of replicates/combination of different parameters
+replicates = 20 # number of replicates/combination of different parameters
 
-grid = expand.grid("obs_sd" = c(0, 0.2, 0.4, 0.8),
-                   "pro_sd" = c(0.1, 0.2, 0.4),
-                   "iter" = seq(1,replicates),
-                   "frac_missing" = c(0, 0.2, 0.4),
-                   "food_web" = c("linear","2_prey","2_basal"),
-                   "ts_length" = c(15,30,45))
+grid = expand.grid("obs_sd" = c(0.2, 0.4, 0.8),
+  "pro_sd" = c(0.1, 0.2, 0.4),
+  "iter" = seq(1,replicates),
+  "frac_missing" = c(0),
+  "food_web" = c("linear"),
+  "ts_length" = c(30),
+  "obs_CV"=c(0.1,0.5,1),
+  "pro_CV"=c(0.1,0.5,1),
+  "b_CV" = c(0.1,0.5,1))
+
+# We don't need all combinations of the above. We need:
+# 1. for variance effects, all variance combos with b_CV == 1
+grid$keep = 0
+grid$keep[which(grid$b_CV==1)] = 1
+# 2. for interatction effects, high CV variances (obs_CV, pro_CV==1) and 
+grid$keep[which(grid$obs_CV==1 & grid$pro_CV==1)] = 1
+
 grid$seed = .Random.seed[grid$iter]
-grid$iter = seq(1,nrow(grid))
+grid = grid[which(grid$keep==1),]
+
+saveRDS(grid, file="grid.rds")
+
 # EW: I propose creating the above grid, but *not necessarily running all of those models*
 # It'd help to envision which of the above forms a base case, and we can run models to evaluate
 # each comparison. Maybe set the flag for 'base_case' for the models we want to run = 1
@@ -29,4 +42,3 @@ grid$iter = seq(1,nrow(grid))
 #grid$run_model[which(grid$obs_sd==0.2 & grid$pro_sd==0.2 & grid$ts_length==30)] = 1 # for frac missing comparison
 #grid$run_model[which(grid$obs_sd==0.2 & grid$pro_sd==0.2 & grid$frac_missing==0.2)] = 1 # for ts_length comparison
 
-saveRDS(grid, file="grid.rds")
