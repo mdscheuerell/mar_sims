@@ -33,8 +33,8 @@ raw_dir <- here("results/raw_models")
 
 ## load grid of sim options
 grid <- readRDS("grid.rds")
-grid$batch = sort(rep(1:n_batch, ceiling(nrow(grid)/batch)))[1:nrow(grid)]
-  
+grid$batch = sort(rep(1:n_batch, ceiling(nrow(grid)/n_batch)))[1:nrow(grid)]
+
 ##-----------------
 ## specify options
 ##-----------------
@@ -180,7 +180,7 @@ for(ii in which(grid$batch == this_batch)) {
 
   ## get mean of B elemenets
   b_mu = rep(0, nrow(rc_off))
-  b_sd = rep(0, nrow(rc_off))  
+  b_sd = rep(0, nrow(rc_off))
   for(jj in 1:nrow(rc_off)) {
     b_mu[jj] = B0_mat[rc_off[jj,1],rc_off[jj,2]]
     b_sd[jj] = grid$b_CV[ii]*b_mu[jj]
