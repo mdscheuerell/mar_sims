@@ -82,19 +82,20 @@ B0_lfc <- matrix(c(0.5, -0.1,  0.0,  0.0,
                    0.3,  0.6, -0.2,  0.0,
                    0.0,  0.2,  0.7, -0.3,
                    0.0,  0.0,  0.1,  0.8),4,4)
-post_shortpar = NA
+post$shortpar = NA
+post$true = NA
 for(i in 1:4) {
   for(j in 1:4) {
-    post_shortpar[which(post$par %in% paste0("Bmat[",i,",",j,"]",seq(1,maxiter)))] = paste0("B[",i,",",j,"]")
+    post$true[which(post$par %in% paste0("Bmat[",i,",",j,"]",seq(1,maxiter)))] = B0_lfc[i,j]
+    post$shortpar[which(post$par %in% paste0("Bmat[",i,",",j,"]",seq(1,maxiter)))] = paste0("B[",i,",",j,"]")
   }
 }
 
-
-post = post[-which(is.na(post_shortpar)),]
-ggplot(dplyr::filter(post, pro_CV==1 & obs_CV==1),
+post = post[-which(is.na(post$shortpar)),]
+ggplot(dplyr::filter(post, obs_CV==1,pro_CV==1),
        aes(x=as.factor(b_CV), y=mean,group=as.factor(b_CV))) + 
-  geom_boxplot() + geom_hline(aes(yintercept = 0.5),col="red",alpha=0.5) + 
-  ylab("Estimated b parameter") + xlab("")
+  geom_boxplot() + 
+  ylab("Estimated b parameter") + xlab("") + facet_wrap(~shortpar,scale="free_y")
 
 
 grid$B11 = post$mean[which(substr(rownames(post),1,9)=="Bmat[1,1]")]
