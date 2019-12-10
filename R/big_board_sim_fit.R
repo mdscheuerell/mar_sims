@@ -62,7 +62,7 @@ B0_lfc <- c(0.5, -0.1,  0.0,  0.0,
             0.3,  0.6, -0.2,  0.0,
             0.0,  0.2,  0.7, -0.3,
             0.0,  0.0,  0.1,  0.8)
-B0_mat = matrix(B0_lfc,4,4)
+B0_mat = matrix(B0_lfc,4,4, byrow=TRUE)
 
 ##-------
 ## setup
@@ -125,7 +125,7 @@ for(ii in which(grid$batch == this_batch)) {
     B_vals <- B0_bas
     B_topo <- topo_bas
   }
-  Bmat <- matrix(B_vals, n_species, n_species, byrow = TRUE)
+
   topo <- matrix(B_topo, n_species, n_species, byrow = TRUE)
 
   ## row/col indices for off-diagonals
@@ -135,7 +135,7 @@ for(ii in which(grid$batch == this_batch)) {
 
   ## simulate process. var_QX is process error on states.
   ## var_QB is process var on B -- ignored for static B models.
-  sim <- simTVVAR(Bt = Bmat,
+  sim <- simTVVAR(Bt = B0_mat,
                   topo = topo,
                   TT = n_time,
                   var_QX = proc_sd_true^2,
