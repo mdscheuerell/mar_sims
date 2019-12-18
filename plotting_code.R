@@ -1,9 +1,9 @@
 library(dplyr)
 library(ggplot2)
 grid = readRDS("grid.rds")
-post = rbind(readRDS("results/posterior_summaries_1.rds"),
-             readRDS("results/posterior_summaries_2.rds"),
-             readRDS("results/posterior_summaries_3.rds"))
+post = rbind(readRDS("results/posterior_summaries_t_1.rds"),
+             readRDS("results/posterior_summaries_t_2.rds"),
+             readRDS("results/posterior_summaries_t_3.rds"))
 post$par = rownames(post)
 
 sd_obs_locs = grep("SD_obs",rownames(post))
@@ -21,7 +21,8 @@ grid$obs_CV_label = paste0("obs_CV=",grid$obs_CV)
 pdf("plots/Estimated obs error.pdf")
 ggplot(dplyr::filter(grid, b_CV==1),
   aes(x=as.factor(obs_CV), y=sd_obs_est, group=as.factor(obs_CV))) +
-  geom_boxplot() + xlab("prior CV of obs SD") + ylab("Estimated obs error SD") +
+  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) + 
+  xlab("prior CV of obs SD") + ylab("Estimated obs error SD") +
   geom_hline(aes(yintercept = obs_sd),col="red",alpha=0.3) +
   facet_grid(obs_sd_label~ pro_sd_label, scale="free")
 dev.off()
@@ -29,7 +30,8 @@ dev.off()
 pdf("plots/Estimated process error.pdf")
 ggplot(dplyr::filter(grid, b_CV==1),
   aes(x=as.factor(pro_CV), y=sd_pro_est, group=as.factor(pro_CV))) +
-  geom_boxplot() + xlab("prior CV of process SD") + ylab("Estimated pro error SD") +
+  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) + 
+  xlab("prior CV of process SD") + ylab("Estimated pro error SD") +
   geom_hline(aes(yintercept = pro_sd),col="red",alpha=0.3) +
   facet_grid(obs_sd_label~ pro_sd_label, scale="free")
 dev.off()
@@ -83,7 +85,7 @@ dev.off()
 B0_lfc <- matrix(c(0.5, -0.1,  0.0,  0.0,
                    0.3,  0.6, -0.2,  0.0,
                    0.0,  0.2,  0.7, -0.3,
-                   0.0,  0.0,  0.1,  0.8),4,4)
+                   0.0,  0.0,  0.1,  0.8),4,4, byrow=TRUE)
 post$shortpar = NA
 post$true = NA
 for(i in 1:4) {
@@ -101,7 +103,7 @@ post2 = dplyr::filter(post, !is.na(shortpar),shortpar == "B[1,1]") %>%
 pdf("Estimated_b_elements_bCV.pdf")
 ggplot(dplyr::filter(post, obs_CV==1, pro_CV==1, !is.na(shortpar)),
        aes(x=as.factor(b_CV), y=mean,group=as.factor(b_CV))) +
-  geom_boxplot() +
+  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
   ylab("Estimated B parameter") + xlab("prior CV on B parameter") +
   facet_wrap(~shortpar,scale="free_y") +
   geom_hline(aes(yintercept = true),col="red",alpha=0.3)
