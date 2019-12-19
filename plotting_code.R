@@ -21,7 +21,7 @@ grid$obs_CV_label = paste0("obs_CV=",grid$obs_CV)
 pdf("plots/Estimated obs error.pdf")
 ggplot(dplyr::filter(grid, b_CV==1),
   aes(x=as.factor(obs_CV), y=sd_obs_est, group=as.factor(obs_CV))) +
-  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) + 
+  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
   xlab("prior CV of obs SD") + ylab("Estimated obs error SD") +
   geom_hline(aes(yintercept = obs_sd),col="red",alpha=0.3) +
   facet_grid(obs_sd_label~ pro_sd_label, scale="free")
@@ -30,7 +30,7 @@ dev.off()
 pdf("plots/Estimated process error.pdf")
 ggplot(dplyr::filter(grid, b_CV==1),
   aes(x=as.factor(pro_CV), y=sd_pro_est, group=as.factor(pro_CV))) +
-  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) + 
+  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
   xlab("prior CV of process SD") + ylab("Estimated pro error SD") +
   geom_hline(aes(yintercept = pro_sd),col="red",alpha=0.3) +
   facet_grid(obs_sd_label~ pro_sd_label, scale="free")
@@ -100,7 +100,7 @@ for(i in 1:4) {
 post2 = dplyr::filter(post, !is.na(shortpar),shortpar == "B[1,1]") %>%
   dplyr::filter(, pro_CV==1, obs_CV==1)
 
-pdf("Estimated_b_elements_bCV.pdf")
+pdf("plots/Estimated_b_elements_bCV.pdf")
 ggplot(dplyr::filter(post, obs_CV==1, pro_CV==1, !is.na(shortpar)),
        aes(x=as.factor(b_CV), y=mean,group=as.factor(b_CV))) +
   geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
@@ -108,32 +108,3 @@ ggplot(dplyr::filter(post, obs_CV==1, pro_CV==1, !is.na(shortpar)),
   facet_wrap(~shortpar,scale="free_y") +
   geom_hline(aes(yintercept = true),col="red",alpha=0.3)
 dev.off()
-
-grid$B11 = post$mean[which(substr(rownames(post),1,9)=="Bmat[1,1]")]
-grid$B12 = post$mean[which(substr(rownames(post),1,9)=="Bmat[1,2]")]
-grid$B21 = post$mean[which(substr(rownames(post),1,9)=="Bmat[2,1]")]
-grid$B22 = post$mean[which(substr(rownames(post),1,9)=="Bmat[2,2]")]
-grid$B23 = post$mean[which(substr(rownames(post),1,9)=="Bmat[2,3]")]
-grid$B32 = post$mean[which(substr(rownames(post),1,9)=="Bmat[3,2]")]
-grid$B33 = post$mean[which(substr(rownames(post),1,9)=="Bmat[3,3]")]
-grid$B34 = post$mean[which(substr(rownames(post),1,9)=="Bmat[3,4]")]
-grid$B43 = post$mean[which(substr(rownames(post),1,9)=="Bmat[4,3]")]
-grid$B44 = post$mean[which(substr(rownames(post),1,9)=="Bmat[4,4]")]
-
-# look at estimates of B[1,1] in same format as above
-pdf("plots/Estimated B11.pdf")
-ggplot(grid,
-  aes(x=as.factor(obs_CV), y=B11, group=as.factor(obs_CV))) +
-  geom_boxplot() + xlab("prior CV of obs SD") + ylab("Estimated B[1,1]") +
-  geom_hline(aes(yintercept = 0.5),col="red") +
-  facet_grid(obs_sd~ pro_sd, scale="free")
-dev.off()
-
-# similarly there's tradeoffs between B[1,1] and B[1,2]
-pdf("plots/B11 v B12.pdf")
-ggplot(dplyr::filter(grid, obs_sd == 0.2, pro_sd==0.2),
-  aes(x=B11, y=B12)) +
-  geom_point() + xlab("Estimated B[1,1]") + ylab("Estimated B[1,2]") +
-  facet_grid(obs_CV~ pro_CV, scale="free")
-dev.off()
-
