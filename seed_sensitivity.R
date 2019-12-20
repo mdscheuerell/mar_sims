@@ -281,7 +281,7 @@ par = dplyr::filter(par,
                                "B[3,3]","B[3,4]","B[4,3]","B[4,4]",
                                "x[1,1]","x[2,1]","x[3,1]","x[4,1]",
                                "sd_proc","sd_obs"))
-pdf("Seed_sensitivity.pdf")
+pdf("plots/Seed_sensitivity.pdf")
 ggplot(par, aes(par, mean)) + geom_boxplot(outlier.shape=NA) + 
   geom_point(aes(par,true),col="red",alpha=0.3) + xlab("Parameter") + 
   ylab("Posterior means (boxes) and true values (dots)") +
