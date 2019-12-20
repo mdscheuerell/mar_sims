@@ -96,14 +96,26 @@ for(i in 1:4) {
   }
 }
 
-#
-post2 = dplyr::filter(post, !is.na(shortpar),shortpar == "B[1,1]") %>%
-  dplyr::filter(, pro_CV==1, obs_CV==1)
-
 pdf("plots/Estimated_b_elements_bCV.pdf")
 ggplot(dplyr::filter(post, obs_CV==1, pro_CV==1, !is.na(shortpar)),
        aes(x=as.factor(b_CV), y=mean,group=as.factor(b_CV))) +
   geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
+  ylab("Estimated B parameter") + xlab("prior CV on B parameter") +
+  facet_wrap(~shortpar,scale="free_y") +
+  geom_hline(aes(yintercept = true),col="red",alpha=0.3)
+dev.off()
+
+# make groups obs sd
+pdf("plots/Estimated_b_elements_bCV_grouped.pdf")
+post2 = dplyr::filter(post, obs_CV==1, pro_CV==1, !is.na(shortpar))
+post2$group = NA
+post2$group[which(post2$obs_sd==0.2 & post2$pro_sd == 0.1)] = "obs_sd = 0.2, pro_sd = 0.1"
+post2$group[which(post2$obs_sd==0.2 & post2$pro_sd == 0.4)] = "obs_sd = 0.2, pro_sd = 0.4"
+post2$group[which(post2$obs_sd==0.8 & post2$pro_sd == 0.1)] = "obs_sd = 0.8, pro_sd = 0.1"
+post2$group[which(post2$obs_sd==0.8 & post2$pro_sd == 0.4)] = "obs_sd = 0.8, pro_sd = 0.4"
+ggplot(dplyr::filter(post2,!is.na(group)),
+       aes(x=as.factor(b_CV), y=mean,fill=group)) +
+  geom_boxplot(alpha=0.4,outlier.shape = NA) +
   ylab("Estimated B parameter") + xlab("prior CV on B parameter") +
   facet_wrap(~shortpar,scale="free_y") +
   geom_hline(aes(yintercept = true),col="red",alpha=0.3)
