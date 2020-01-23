@@ -120,3 +120,45 @@ ggplot(dplyr::filter(post2,!is.na(group)),
   facet_wrap(~shortpar,scale="free_y") +
   geom_hline(aes(yintercept = true),col="red",alpha=0.3)
 dev.off()
+
+# Same plot as above, but ungrouped
+pdf("plots/Estimated_b_elements_bCV_ungrouped.pdf")
+post2 = dplyr::filter(post, obs_CV==1, pro_CV==1, !is.na(shortpar))
+post2$group = NA
+post2$group[which(post2$obs_sd==0.2 & post2$pro_sd == 0.1)] = "obs_sd = 0.2, pro_sd = 0.1"
+post2$group[which(post2$obs_sd==0.2 & post2$pro_sd == 0.4)] = "obs_sd = 0.2, pro_sd = 0.4"
+post2$group[which(post2$obs_sd==0.8 & post2$pro_sd == 0.1)] = "obs_sd = 0.8, pro_sd = 0.1"
+post2$group[which(post2$obs_sd==0.8 & post2$pro_sd == 0.4)] = "obs_sd = 0.8, pro_sd = 0.4"
+
+ggplot(dplyr::filter(post2,!is.na(group),post2$obs_sd==0.2,post2$pro_sd == 0.1),
+  aes(x=as.factor(b_CV), y=mean)) +
+  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
+  ylab("Estimated B parameter") + xlab("prior CV on B parameter") +
+  facet_wrap(~shortpar,scale="free_y") +
+  geom_hline(aes(yintercept = true),col="red",alpha=0.3) + 
+  ggtitle("obs_sd = 0.2, pro_sd = 0.1")
+
+ggplot(dplyr::filter(post2,!is.na(group),post2$obs_sd==0.2,post2$pro_sd == 0.4),
+  aes(x=as.factor(b_CV), y=mean)) +
+  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
+  ylab("Estimated B parameter") + xlab("prior CV on B parameter") +
+  facet_wrap(~shortpar,scale="free_y") +
+  geom_hline(aes(yintercept = true),col="red",alpha=0.3) + 
+  ggtitle("obs_sd = 0.2, pro_sd = 0.4")
+
+ggplot(dplyr::filter(post2,!is.na(group),post2$obs_sd==0.8,post2$pro_sd == 0.1),
+  aes(x=as.factor(b_CV), y=mean)) +
+  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
+  ylab("Estimated B parameter") + xlab("prior CV on B parameter") +
+  facet_wrap(~shortpar,scale="free_y") +
+  geom_hline(aes(yintercept = true),col="red",alpha=0.3) + 
+  ggtitle("obs_sd = 0.8, pro_sd = 0.1")
+
+ggplot(dplyr::filter(post2,!is.na(group),post2$obs_sd==0.8,post2$pro_sd == 0.4),
+  aes(x=as.factor(b_CV), y=mean)) +
+  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
+  ylab("Estimated B parameter") + xlab("prior CV on B parameter") +
+  facet_wrap(~shortpar,scale="free_y") +
+  geom_hline(aes(yintercept = true),col="red",alpha=0.3) + 
+  ggtitle("obs_sd = 0.8, pro_sd = 0.4")
+dev.off()
