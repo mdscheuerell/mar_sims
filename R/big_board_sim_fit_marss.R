@@ -125,6 +125,15 @@ for(ii in 1:nrow(grid)) {
 
 }
 
+marss_pars = matrix(nrow=nrow(grid), ncol = 13)
+for(ii in 1:nrow(grid)) {
+  fit = readRDS(file.path(raw_dir, paste0("marss_", ii, ".rds")))
+  pars = c(fit$par$B, fit$par$Q, fit$par$Q)
+  marss_pars[ii,1] = ii
+  marss_pars[ii,2:13] = c(fit$par$B, fit$par$R, fit$par$Q)
+}
+colnames(marss_pars) = c("id","b11","b21","b12","b22","b32","b23","b33","b43","b34","b44","R","Q")
+saveRDS(marss_pars,"marss_pars.rds")
 
 #g = group_by(posterior_summaries_parII[grep("Bmat",rownames(posterior_summaries_parII)),], iter) %>%
 #  summarize(m = max(Rhat,na.rm=T))
