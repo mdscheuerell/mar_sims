@@ -162,3 +162,24 @@ ggplot(dplyr::filter(post2,!is.na(group),post2$obs_sd==0.8,post2$pro_sd == 0.4),
   geom_hline(aes(yintercept = true),col="red",alpha=0.3) + 
   ggtitle("obs_sd = 0.8, pro_sd = 0.4")
 dev.off()
+
+
+# labels
+grid = readRDS("marss_pars.rds")
+grid$pro_sd_label = paste0("pro_sd=",grid$pro_sd)
+grid$obs_sd_label = paste0("obs_sd=",grid$obs_sd)
+grid$pro_CV_label = paste0("pro_CV=",grid$pro_CV)
+grid$obs_CV_label = paste0("obs_CV=",grid$obs_CV)
+grid = grid[,-12]
+grid$sd_obs_est = sqrt(grid$R)
+grid$sd_pro_est = sqrt(grid$Q)
+  
+# make basic plots of
+pdf("plots/Estimated obs error.pdf")
+ggplot(dplyr::filter(grid, b_CV==1),
+       aes(x=as.factor(obs_CV), y=sd_obs_est, group=as.factor(obs_CV))) +
+  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
+  xlab("prior CV of obs SD") + ylab("Estimated obs error SD") +
+  geom_hline(aes(yintercept = obs_sd),col="red",alpha=0.3) +
+  facet_grid(obs_sd_label~ pro_sd_label, scale="free")
+dev.off()
