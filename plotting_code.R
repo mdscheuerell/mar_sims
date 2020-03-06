@@ -12,8 +12,10 @@ sd_pro_locs = grep("SD_pro",rownames(post))
 grid$sd_pro_est = post$mean[sd_pro_locs]
 
 # labels
-grid$pro_sd_label = paste0("pro_sd=",grid$pro_sd)
-grid$obs_sd_label = paste0("obs_sd=",grid$obs_sd)
+grid$pro_sd_label = factor(grid$pro_sd, 
+  labels = c("sigma[pro] == 0.1","sigma[pro] == 0.2","sigma[pro] == 0.4"))
+grid$obs_sd_label = factor(grid$obs_sd, 
+  labels = c("sigma[obs] == 0.2","sigma[obs] == 0.4","sigma[obs] == 0.8"))
 grid$pro_CV_label = paste0("pro_CV=",grid$pro_CV)
 grid$obs_CV_label = paste0("obs_CV=",grid$obs_CV)
 
@@ -21,19 +23,21 @@ grid$obs_CV_label = paste0("obs_CV=",grid$obs_CV)
 pdf("plots/Estimated obs error.pdf")
 ggplot(dplyr::filter(grid, b_CV==1),
   aes(x=as.factor(obs_CV), y=sd_obs_est, group=as.factor(obs_CV))) +
-  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
-  xlab("prior CV of obs SD") + ylab("Estimated obs error SD") +
+  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.65,outlier.shape = NA) +
+  xlab(expression(prior~CV~sigma[obs])) + ylab(expression(Estimated~sigma[obs])) +
   geom_hline(aes(yintercept = obs_sd),col="red",alpha=0.3) +
-  facet_grid(obs_sd_label~ pro_sd_label, scale="free")
+  facet_grid(obs_sd_label ~ pro_sd_label, scale="free_y",labeller = "label_parsed") + 
+  theme_bw() + theme(strip.background = element_rect(color="black",fill="white"))
 dev.off()
 
 pdf("plots/Estimated process error.pdf")
 ggplot(dplyr::filter(grid, b_CV==1),
   aes(x=as.factor(pro_CV), y=sd_pro_est, group=as.factor(pro_CV))) +
-  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
-  xlab("prior CV of process SD") + ylab("Estimated pro error SD") +
+  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.65,outlier.shape = NA) +
+  xlab(expression(prior~CV~sigma[pro])) + ylab(expression(Estimated~sigma[pro])) +
   geom_hline(aes(yintercept = pro_sd),col="red",alpha=0.3) +
-  facet_grid(obs_sd_label~ pro_sd_label, scale="free")
+  facet_grid(obs_sd_label~ pro_sd_label, scale="free_y",labeller = "label_parsed") + 
+  theme_bw() + theme(strip.background = element_rect(color="black",fill="white"))
 dev.off()
 
 pdf("plots/Obs v process error.pdf")
@@ -175,11 +179,33 @@ grid$sd_obs_est = sqrt(grid$R)
 grid$sd_pro_est = sqrt(grid$Q)
   
 # make basic plots of
-pdf("plots/Estimated obs error.pdf")
+pdf("plots/Estimated obs error_marss.pdf")
 ggplot(dplyr::filter(grid, b_CV==1),
-       aes(x=as.factor(obs_CV), y=sd_obs_est, group=as.factor(obs_CV))) +
+       aes(y=sd_obs_est)) +
   geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
-  xlab("prior CV of obs SD") + ylab("Estimated obs error SD") +
+  ylab("Estimated obs error SD") +
   geom_hline(aes(yintercept = obs_sd),col="red",alpha=0.3) +
   facet_grid(obs_sd_label~ pro_sd_label, scale="free")
 dev.off()
+
+pdf("plots/Estimated pro error_marss.pdf")
+ggplot(dplyr::filter(grid, b_CV==1),
+  aes(y=sd_pro_est)) +
+  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
+  ylab("Estimated pro error SD") +
+  geom_hline(aes(yintercept = pro_sd),col="red",alpha=0.3) +
+  facet_grid(obs_sd_label~ pro_sd_label, scale="free")
+dev.off()
+
+pdf("plots/Obs v process error_marss.pdf")
+ggplot(dplyr::filter(dplyr::filter(grid, b_CV==1)),
+  aes(x=sd_obs_est, y=sd_pro_est)) +
+  geom_point() +
+  facet_grid(obs_sd_label ~ pro_sd_label, scale="free") +
+  xlab("Estimated obs error SD") + ylab("Estimated pro error SD") +
+  geom_vline(aes(xintercept = obs_sd),col="red",alpha=0.3) +
+  geom_hline(aes(yintercept = pro_sd),col="red",alpha=0.3)
+dev.off()
+
+par(mfrow=c(4,4))
+boxplot(b11 ~ 1,data=grid)
