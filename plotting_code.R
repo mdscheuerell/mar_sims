@@ -16,8 +16,10 @@ grid$pro_sd_label = factor(grid$pro_sd,
   labels = c("sigma[pro] == 0.1","sigma[pro] == 0.2","sigma[pro] == 0.4"))
 grid$obs_sd_label = factor(grid$obs_sd, 
   labels = c("sigma[obs] == 0.2","sigma[obs] == 0.4","sigma[obs] == 0.8"))
-grid$pro_CV_label = paste0("pro_CV=",grid$pro_CV)
-grid$obs_CV_label = paste0("obs_CV=",grid$obs_CV)
+grid$pro_CV_label = factor(grid$pro_CV, 
+  labels = c("CV[pro] == 0.1","CV[pro] == 0.5","CV[pro] == 1"))
+grid$obs_CV_label = factor(grid$obs_CV, 
+  labels = c("CV[obs] == 0.1","CV[obs] == 0.5","CV[obs] == 1"))
 
 # make basic plots of
 pdf("plots/Estimated obs error.pdf")
@@ -43,11 +45,12 @@ dev.off()
 pdf("plots/Obs v process error.pdf")
 ggplot(dplyr::filter(dplyr::filter(grid, b_CV==1), obs_sd == 0.2, pro_sd==0.2),
   aes(x=sd_obs_est, y=sd_pro_est)) +
-  geom_point() +
-  facet_grid(obs_CV_label ~ pro_CV_label, scale="free") +
-  xlab("Estimated obs error SD") + ylab("Estimated pro error SD") +
+  geom_point(col="darkblue",fill="darkblue",alpha=0.65,size=2) +
+  facet_grid(obs_CV_label ~ pro_CV_label, scale="free",labeller = "label_parsed") +
+  xlab(expression(Estimated~sigma[obs])) + ylab(expression(Estimated~sigma[pro])) +
   geom_vline(aes(xintercept = 0.2),col="red",alpha=0.3) +
-  geom_hline(aes(yintercept = 0.2),col="red",alpha=0.3)
+  geom_hline(aes(yintercept = 0.2),col="red",alpha=0.3) + 
+  theme_bw() + theme(strip.background = element_rect(color="black",fill="white"))
 dev.off()
 
 # make similar plots for interactions
