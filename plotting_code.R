@@ -373,3 +373,59 @@ b22 = ggplot(post2, aes(mean, b22, col=b_CV)) +
 
 gridExtra::grid.arrange(b11,b12,b21,b22,nrow=2,ncol=2)
 dev.off()
+
+
+
+
+pdf("marss_v_bayes_sigma_obs_b.pdf")
+
+post2 = post[which(startsWith(post$par, "Bmat[1,1]")==TRUE),]
+post2 = dplyr::left_join(grid,post2)
+post2$b_CV = as.factor(post2$b_CV)
+post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
+
+post2=filter(post2,pro_sd==0.2, obs_sd==0.4,pro_CV==1,obs_CV==1)
+b11 = ggplot(post2, aes(mean, b11, col=b_CV)) + 
+  geom_point() + 
+  geom_abline(intercept=0,slope=1) + 
+  xlab("Posterior mean, B[1,1]") + 
+  ylab("MLE, B[1,1]")
+
+post2 = post[which(startsWith(post$par, "Bmat[1,2]")==TRUE),]
+post2 = dplyr::left_join(grid,post2)
+post2$b_CV = as.factor(post2$b_CV)
+post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
+
+post2=filter(post2,pro_sd==0.2, obs_sd==0.4,pro_CV==1,obs_CV==1)
+b12 = ggplot(post2, aes(mean, b12, col=b_CV)) + 
+  geom_point() + 
+  geom_abline(intercept=0,slope=1) + 
+  xlab("Posterior mean, B[1,2]") + 
+  ylab("MLE, B[1,2]")
+
+post2 = post[which(startsWith(post$par, "Bmat[2,1]")==TRUE),]
+post2 = dplyr::left_join(grid,post2)
+post2$b_CV = as.factor(post2$b_CV)
+post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
+
+post2=filter(post2,pro_sd==0.2, obs_sd==0.4,pro_CV==1,obs_CV==1)
+b21 = ggplot(post2, aes(mean, b21, col=b_CV)) + 
+  geom_point() + 
+  geom_abline(intercept=0,slope=1) + 
+  xlab("Posterior mean, B[2,1]") + 
+  ylab("MLE, B[2,1]")
+
+post2 = post[which(startsWith(post$par, "Bmat[2,2]")==TRUE),]
+post2 = dplyr::left_join(grid,post2)
+post2$b_CV = as.factor(post2$b_CV)
+post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
+
+post2=filter(post2,pro_sd==0.2, obs_sd==0.4,pro_CV==1,obs_CV==1)
+b22 = ggplot(post2, aes(mean, b22, col=b_CV)) + 
+  geom_point() + 
+  geom_abline(intercept=0,slope=1) + 
+  xlab("Posterior mean, B[2,2]") + 
+  ylab("MLE, B[2,2]")
+
+gridExtra::grid.arrange(b11,b12,b21,b22,nrow=2,ncol=2)
+dev.off()
