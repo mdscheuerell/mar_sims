@@ -6,6 +6,7 @@ post = rbind(readRDS("results/posterior_summaries_t_1.rds"),
              readRDS("results/posterior_summaries_t_3.rds"))
 post$par = rownames(post)
 
+# these added later
 newgrid = readRDS("grid_extended.rds")
 newpost = readRDS("results/posterior_summaries_1_extended.rds")
 newpost$par = rownames(newpost)
@@ -237,16 +238,23 @@ scale_x_discrete(labels = c('0.2 0.4' = expression(paste(sigma[obs],"= 0.2")),
 dev.off()
 
 
-# labels
+# Esrtimates of MLEs vs Posteriors
+
+post = rbind(readRDS("results/posterior_summaries_t_1.rds"),
+  readRDS("results/posterior_summaries_t_2.rds"),
+  readRDS("results/posterior_summaries_t_3.rds"))
+post$par = rownames(post)
+
 grid = readRDS("marss_pars.rds")
 grid$pro_sd_label = paste0("pro_sd=",grid$pro_sd)
 grid$obs_sd_label = paste0("obs_sd=",grid$obs_sd)
 grid$pro_CV_label = paste0("pro_CV=",grid$pro_CV)
 grid$obs_CV_label = paste0("obs_CV=",grid$obs_CV)
-grid = grid[,-12]
+
 grid$sd_obs_est = sqrt(grid$R)
 grid$sd_pro_est = sqrt(grid$Q)
   
+
 # make basic plots of
 pdf("plots/Estimated obs error_marss.pdf")
 ggplot(dplyr::filter(grid, b_CV==1),
@@ -276,5 +284,92 @@ ggplot(dplyr::filter(dplyr::filter(grid, b_CV==1)),
   geom_hline(aes(yintercept = pro_sd),col="red",alpha=0.3)
 dev.off()
 
-par(mfrow=c(4,4))
-boxplot(b11 ~ 1,data=grid)
+
+# make similar plots for interactions
+grid$iter = seq(1,nrow(grid))
+
+# start with upper right corner or obs_erorr plot, pro_sd = 0.4, obs_sd = 0.2
+post2 = post[grep("SD_obs",post$par),]
+post2 = dplyr::left_join(grid,post2)
+
+post2$obs_CV = as.factor(post2$obs_CV)
+post2$pro_CV_label = paste("pro_sd = ",post2$pro_sd)
+pdf("marss_v_bayes_sigma_obs.pdf")
+ggplot(filter(post2,b_CV==1, pro_sd==0.4, obs_sd==0.2), aes(mean, sd_obs_est, col=obs_CV)) + 
+  geom_point() + 
+  facet_wrap(~pro_CV_label) + 
+  geom_abline(intercept=0,slope=1) + 
+  xlab("Posterior mean, sigma_obs") + 
+  ylab("MLE, sigma_obs") #+ 
+  #ggtitle("MLE tends to lead to higher estimates of sigma_obs when pro_sd > obs_sd")
+dev.off()
+
+# start with upper right corner or obs_erorr plot, pro_sd = 0.4, obs_sd = 0.2
+post2 = post[grep("SD_pro",post$par),]
+post2 = dplyr::left_join(grid,post2)
+
+post2$pro_CV = as.factor(post2$pro_CV)
+post2$obs_CV_label = paste("obs_sd = ",post2$obs_sd)
+pdf("marss_v_bayes_sigma_pro.pdf")
+ggplot(filter(post2,b_CV==1, pro_sd==0.4, obs_sd==0.2), aes(mean, sd_pro_est, col=pro_CV)) + 
+  geom_point() + 
+  facet_wrap(~obs_CV_label) + 
+  geom_abline(intercept=0,slope=1) + 
+  xlab("Posterior mean, sigma_obs") + 
+  ylab("MLE, sigma_pro") + 
+  ggtitle("MLE tends to lead to lower estimates of sigma_obs when pro_sd > obs_sd")
+dev.off()
+
+
+pdf("marss_v_bayes_sigma_obs.pdf")
+
+post2 = post[which(startsWith(post$par, "Bmat[1,1]")==TRUE),]
+post2 = dplyr::left_join(grid,post2)
+post2$b_CV = as.factor(post2$b_CV)
+post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
+
+post2=filter(post2,pro_sd==0.4, obs_sd==0.2,pro_CV==1,obs_CV==1)
+b11 = ggplot(post2, aes(mean, b11, col=b_CV)) + 
+  geom_point() + 
+  geom_abline(intercept=0,slope=1) + 
+  xlab("Posterior mean, B[1,1]") + 
+  ylab("MLE, B[1,1]")
+
+post2 = post[which(startsWith(post$par, "Bmat[1,2]")==TRUE),]
+post2 = dplyr::left_join(grid,post2)
+post2$b_CV = as.factor(post2$b_CV)
+post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
+
+post2=filter(post2,pro_sd==0.4, obs_sd==0.2,pro_CV==1,obs_CV==1)
+b12 = ggplot(post2, aes(mean, b12, col=b_CV)) + 
+  geom_point() + 
+  geom_abline(intercept=0,slope=1) + 
+  xlab("Posterior mean, B[1,2]") + 
+  ylab("MLE, B[1,2]")
+
+post2 = post[which(startsWith(post$par, "Bmat[2,1]")==TRUE),]
+post2 = dplyr::left_join(grid,post2)
+post2$b_CV = as.factor(post2$b_CV)
+post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
+
+post2=filter(post2,pro_sd==0.4, obs_sd==0.2,pro_CV==1,obs_CV==1)
+b21 = ggplot(post2, aes(mean, b21, col=b_CV)) + 
+  geom_point() + 
+  geom_abline(intercept=0,slope=1) + 
+  xlab("Posterior mean, B[2,1]") + 
+  ylab("MLE, B[2,1]")
+
+post2 = post[which(startsWith(post$par, "Bmat[2,2]")==TRUE),]
+post2 = dplyr::left_join(grid,post2)
+post2$b_CV = as.factor(post2$b_CV)
+post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
+
+post2=filter(post2,pro_sd==0.4, obs_sd==0.2,pro_CV==1,obs_CV==1)
+b22 = ggplot(post2, aes(mean, b22, col=b_CV)) + 
+  geom_point() + 
+  geom_abline(intercept=0,slope=1) + 
+  xlab("Posterior mean, B[2,2]") + 
+  ylab("MLE, B[2,2]")
+
+gridExtra::grid.arrange(b11,b12,b21,b22,nrow=2,ncol=2)
+dev.off()
