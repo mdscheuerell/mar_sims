@@ -328,7 +328,7 @@ post2 = dplyr::left_join(grid,post2)
 post2$b_CV = as.factor(post2$b_CV)
 post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
 
-post2=filter(post2,pro_sd==0.4, obs_sd==0.2,pro_CV==1,obs_CV==1)
+post2=filter(post2,pro_sd==0.4, obs_sd==0.2,pro_CV==1,obs_CV==1,convergence==0)
 b11 = ggplot(post2, aes(mean, b11, col=b_CV)) + 
   geom_point() + 
   geom_abline(intercept=0,slope=1) + 
@@ -340,7 +340,7 @@ post2 = dplyr::left_join(grid,post2)
 post2$b_CV = as.factor(post2$b_CV)
 post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
 
-post2=filter(post2,pro_sd==0.4, obs_sd==0.2,pro_CV==1,obs_CV==1)
+post2=filter(post2,pro_sd==0.4, obs_sd==0.2,pro_CV==1,obs_CV==1,convergence==0)
 b12 = ggplot(post2, aes(mean, b12, col=b_CV)) + 
   geom_point() + 
   geom_abline(intercept=0,slope=1) + 
@@ -352,7 +352,7 @@ post2 = dplyr::left_join(grid,post2)
 post2$b_CV = as.factor(post2$b_CV)
 post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
 
-post2=filter(post2,pro_sd==0.4, obs_sd==0.2,pro_CV==1,obs_CV==1)
+post2=filter(post2,pro_sd==0.4, obs_sd==0.2,pro_CV==1,obs_CV==1,convergence==0)
 b21 = ggplot(post2, aes(mean, b21, col=b_CV)) + 
   geom_point() + 
   geom_abline(intercept=0,slope=1) + 
@@ -364,7 +364,7 @@ post2 = dplyr::left_join(grid,post2)
 post2$b_CV = as.factor(post2$b_CV)
 post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
 
-post2=filter(post2,pro_sd==0.4, obs_sd==0.2,pro_CV==1,obs_CV==1)
+post2=filter(post2,pro_sd==0.4, obs_sd==0.2,pro_CV==1,obs_CV==1,convergence==0)
 b22 = ggplot(post2, aes(mean, b22, col=b_CV)) + 
   geom_point() + 
   geom_abline(intercept=0,slope=1) + 
@@ -384,7 +384,7 @@ post2 = dplyr::left_join(grid,post2)
 post2$b_CV = as.factor(post2$b_CV)
 post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
 
-post2=filter(post2,pro_sd==0.2, obs_sd==0.4,pro_CV==1,obs_CV==1)
+post2=filter(post2,pro_sd==0.2, obs_sd==0.4,pro_CV==1,obs_CV==1,convergence==0)
 b11 = ggplot(post2, aes(mean, b11, col=b_CV)) + 
   geom_point() + 
   geom_abline(intercept=0,slope=1) + 
@@ -396,7 +396,7 @@ post2 = dplyr::left_join(grid,post2)
 post2$b_CV = as.factor(post2$b_CV)
 post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
 
-post2=filter(post2,pro_sd==0.2, obs_sd==0.4,pro_CV==1,obs_CV==1)
+post2=filter(post2,pro_sd==0.2, obs_sd==0.4,pro_CV==1,obs_CV==1,convergence==0)
 b12 = ggplot(post2, aes(mean, b12, col=b_CV)) + 
   geom_point() + 
   geom_abline(intercept=0,slope=1) + 
@@ -408,7 +408,7 @@ post2 = dplyr::left_join(grid,post2)
 post2$b_CV = as.factor(post2$b_CV)
 post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
 
-post2=filter(post2,pro_sd==0.2, obs_sd==0.4,pro_CV==1,obs_CV==1)
+post2=filter(post2,pro_sd==0.2, obs_sd==0.4,pro_CV==1,obs_CV==1,convergence==0)
 b21 = ggplot(post2, aes(mean, b21, col=b_CV)) + 
   geom_point() + 
   geom_abline(intercept=0,slope=1) + 
@@ -420,7 +420,7 @@ post2 = dplyr::left_join(grid,post2)
 post2$b_CV = as.factor(post2$b_CV)
 post2$b_CV_label = paste("pro_sd = ",post2$pro_sd)
 
-post2=filter(post2,pro_sd==0.2, obs_sd==0.4,pro_CV==1,obs_CV==1)
+post2=filter(post2,pro_sd==0.2, obs_sd==0.4,pro_CV==1,obs_CV==1,convergence==0)
 b22 = ggplot(post2, aes(mean, b22, col=b_CV)) + 
   geom_point() + 
   geom_abline(intercept=0,slope=1) + 
