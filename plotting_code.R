@@ -294,7 +294,7 @@ post2 = dplyr::left_join(grid,post2)
 
 post2$obs_CV = as.factor(post2$obs_CV)
 post2$pro_CV_label = paste("pro_sd = ",post2$pro_sd)
-pdf("marss_v_bayes_sigma_obs.pdf")
+pdf("plots/marss_v_bayes_sigma_obs.pdf")
 ggplot(filter(post2,b_CV==1, pro_sd==0.4, obs_sd==0.2), aes(mean, sd_obs_est, col=obs_CV)) + 
   geom_point() + 
   facet_wrap(~pro_CV_label) + 
@@ -310,7 +310,7 @@ post2 = dplyr::left_join(grid,post2)
 
 post2$pro_CV = as.factor(post2$pro_CV)
 post2$obs_CV_label = paste("obs_sd = ",post2$obs_sd)
-pdf("marss_v_bayes_sigma_pro.pdf")
+pdf("plots/marss_v_bayes_sigma_pro.pdf")
 ggplot(filter(post2,b_CV==1, pro_sd==0.4, obs_sd==0.2), aes(mean, sd_pro_est, col=pro_CV)) + 
   geom_point() + 
   facet_wrap(~obs_CV_label) + 
@@ -321,7 +321,7 @@ ggplot(filter(post2,b_CV==1, pro_sd==0.4, obs_sd==0.2), aes(mean, sd_pro_est, co
 dev.off()
 
 
-pdf("marss_v_bayes_sigma_obs.pdf")
+pdf("plots/marss_v_bayes_B.pdf")
 
 post2 = post[which(startsWith(post$par, "Bmat[1,1]")==TRUE),]
 post2 = dplyr::left_join(grid,post2)
@@ -377,7 +377,7 @@ dev.off()
 
 
 
-pdf("marss_v_bayes_sigma_obs_b.pdf")
+pdf("plots/marss_v_bayes_sigma_B_b.pdf")
 
 post2 = post[which(startsWith(post$par, "Bmat[1,1]")==TRUE),]
 post2 = dplyr::left_join(grid,post2)
