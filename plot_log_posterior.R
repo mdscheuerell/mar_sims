@@ -2,7 +2,6 @@
 # SK - change this next line
 this_batch = 1 # 1, 2, 3
 
-
 n_batch = 3 # max - 3 by default
 
 ##-------------------
@@ -56,8 +55,8 @@ stan_mcmc <- list(iter = 3000, warmup = 2000, chains = 3, thin = 1, refresh = 0)
 ## linear food chain (eg, phyto -> zoop -> minnows -> bass)
 topo_lfc <- list("dd", "td",    0,    0,
                  "bu", "dd", "td",    0,
-                    0, "bu", "dd", "td",
-                    0,    0, "bu", "dd")
+                 0, "bu", "dd", "td",
+                 0,    0, "bu", "dd")
 B0_lfc <- c(0.5, -0.1,  0.0,  0.0,
             0.3,  0.6, -0.2,  0.0,
             0.0,  0.2,  0.7, -0.3,
@@ -84,7 +83,7 @@ init_vals <- function(chain_id = 1, n_off, n_species, n_time, n_na) {
        # init_state = rnorm(4, 0, 5),
        # Z_proc = matrix(rnorm(n_species*n_time), n_species, n_time),
        ymiss = rnorm(n_na)
-       )
+  )
 }
 # init_vals <- function(chain_id = 1, n_off, n_species, n_time, n_na) {
 #   list(var_SD = runif(1),
@@ -102,18 +101,18 @@ init_vals <- function(chain_id = 1, n_off, n_species, n_time, n_na) {
 ## sim & fit
 ##-----------
 
-for(ii in which(grid$batch == this_batch)) {
+ii = which(grid$obs_CV==1 & grid$pro_CV==1 & grid$b_CV==1 & grid$obs_sd==0.2 & grid$pro_sd==0.2)[1]
 
   ## set seed
   set.seed(grid$seed[ii])
-
+  
   ## number of time points
   n_time <- grid$ts_length[ii] + n_toss
-
+  
   ## proc & obs var
   proc_sd_true <- grid$pro_sd[ii]
   obs_sd_true <- grid$obs_sd[ii]
-
+  
   ## get correct B matrix & topology
   if(grid$food_web[ii] == "linear") {
     B_vals <- B0_lfc
@@ -125,14 +124,14 @@ for(ii in which(grid$batch == this_batch)) {
     B_vals <- B0_bas
     B_topo <- topo_bas
   }
-
+  
   topo <- matrix(B_topo, n_species, n_species, byrow = TRUE)
-
+  
   ## row/col indices for off-diagonals
   rc_off <- do.call(rbind, sapply(int_types[-1], function(x) which(topo == x, arr.ind = TRUE)))
   ## number of non-zero off-diagonals
   n_off <- nrow(rc_off)
-
+  
   ## simulate process. var_QX is process error on states.
   ## var_QB is process var on B -- ignored for static B models.
   sim <- simTVVAR(Bt = B0_mat,
@@ -142,42 +141,42 @@ for(ii in which(grid$batch == this_batch)) {
                   cov_QX = 0,
                   var_QB = 0,
                   cov_QB = 0)
-
+  
   ## true states
   xx <- sim$states[,-seq(n_toss+1)]
-
+  
   ## observations
   yy <- xx + matrix(rnorm(n_species*(n_time-n_toss), 0, obs_sd_true), n_species, n_time-n_toss)
   # yy <- t(scale(t(yy)))
-
+  
   ## number of proc SD's
   n_q <- length(unique(proc_sd_true))
   id_q <- c(1,1,1,1)
-
+  
   ## number of obs SD's
   n_r <- length(unique(obs_sd_true))
   id_r <- c(1,1,1,1)
-
+  
   ## remove missing data if that's an issue
   ## algorithm = missing at random
   data_to_na <- sample(seq(ncol(yy)), size = ncol(yy)*grid$frac_missing[ii])
   if(length(data_to_na) > 0) {
     yy[,data_to_na] <- NA
   }
-
+  
   ## indices for non-NA values
   row_indx_pos <- matrix(rep(seq_len(nrow(yy)), ncol(yy)), nrow(yy), ncol(yy))[!is.na(yy)]
   col_indx_pos <- matrix(sort(rep(seq_len(ncol(yy)), nrow(yy))), nrow(yy), ncol(yy))[!is.na(yy)]
   n_pos <- length(row_indx_pos)
-
+  
   ## indices for NA values
   row_indx_na <- matrix(rep(seq_len(nrow(yy)), ncol(yy)), nrow(yy), ncol(yy))[is.na(yy)]
   col_indx_na <- matrix(sort(rep(seq_len(ncol(yy)), nrow(yy))), nrow(yy), ncol(yy))[is.na(yy)]
   n_na <- length(row_indx_na)
-
+  
   ## data without NA
   yy <- yy[!is.na(yy)]
-
+  
   ## get mean of B elemenets
   b_mu = rep(0, nrow(rc_off))
   b_sd = rep(0, nrow(rc_off))
@@ -213,7 +212,7 @@ for(ii in which(grid$batch == this_batch)) {
     b_mu_diag = diag(B0_mat),
     b_sd_diag = diag(B0_mat)*grid$b_CV[ii]
   )
-
+  
   ## initial values
   init_ll <- lapply(1:stan_mcmc$chains,
                     function(id) init_vals(chain_id = id,
@@ -221,44 +220,71 @@ for(ii in which(grid$batch == this_batch)) {
                                            n_species = n_species,
                                            n_time = grid$ts_length[ii],
                                            n_na = n_na)
-                    )
+  )
 
-  ## fit model
+# loop through ~ 100 random seeds, using the same dataset above
+set.seed(123)
+
+  ## fit model, without passing init values in
   fit <- try(stan(file = file.path(stan_dir, stan_model),
                   data = dat,
-                  pars = c("Bmat", "SD_proc", "SD_obs", "xx"),
+                  pars = c("Bmat", "SD_proc", "SD_obs"),
                   control = stan_ctrl,
-                  init = init_ll,
-                  iter = stan_mcmc$iter,
-                  warmup = stan_mcmc$warmup,
+                  iter = 30000,
+                  warmup = 5000,
                   chains = stan_mcmc$chains,
                   thin = stan_mcmc$thin,
                   refresh = stan_mcmc$refresh),
              silent=TRUE)
+saveRDS(fit, "fit.rds")
 
-  ## save raw results to a file
-  saveRDS(fit, file = file.path(raw_dir, paste0("run_", ii, ".rds")))
+fit = readRDS("fit.rds")
 
-  ## get summary of mcmc results
-  pars <- as.data.frame(summary(fit, probs = c(0.025, 0.1, 0.25, 0.5, 0.75, 0.9, 0.975))$summary)
-  pars$iter <- ii
+pdf("plots/pairs_fit.pdf")
+  pairs(fit)
+dev.off()
 
-  ## table of posterior summaries
-  post_estimates <- rbind(post_estimates, pars)
+fit = as.data.frame(fit)
+fitdf = fit[,c("Bmat[1,1]","Bmat[1,2]","SD_proc","SD_obs","lp__")]
+names(fitdf) = c("B11","B12","sd_proc","sd_obs","lp")
 
-  ## save table of posterior summaries
-  saveRDS(post_estimates, file = file.path(res_dir, paste0("posterior_summaries_",this_batch,".rds")))
-}
+g1 = ggplot(fitdf, aes(x=sd_obs, y=sd_proc, col=lp)) + 
+  geom_hex(bins=50) + scale_fill_viridis_c() + 
+  xlab(expression(paste("Obs. error ",sigma))) + 
+  ylab(expression(paste("Pro. error ",sigma))) + 
+  labs(fill = "Frequency")
+
+g2 = ggplot(fitdf, aes(sd_obs, sd_proc, z=lp)) + 
+  stat_summary_hex(aes(z = lp), bins = 50, fun = mean) + scale_fill_viridis_c() + 
+  xlab(expression(paste("Obs. error ",sigma))) + 
+  ylab(expression(paste("Pro. error ",sigma))) + 
+  labs(fill = "Log posterior")
+
+pdf("plots/variance_tradeoff.pdf")
+gridExtra::grid.arrange(g1,g2,nrow=1)
+dev.off()
+
+# subtract off the prior on the variance parameters
+fitdf$ll = fitdf$lp - dnorm(fitdf$sd_obs, grid$obs_sd[ii],grid$obs_sd[ii],log=TRUE) - dnorm(fitdf$sd_pro, grid$pro_sd[ii],grid$pro_sd[ii],log=TRUE)
+ggplot(fitdf, aes(sd_obs, sd_proc, z=ll)) + 
+  stat_summary_hex(aes(z = ll), bins = 30, fun = mean) + scale_fill_viridis_c() + 
+  xlab(expression(paste("Obs. error ",sigma))) + 
+  ylab(expression(paste("Pro. error ",sigma))) + 
+  labs(fill = "Log likelihood")
 
 
-#g = group_by(posterior_summaries_parII[grep("Bmat",rownames(posterior_summaries_parII)),], iter) %>%
-#  summarize(m = max(Rhat,na.rm=T))
+g3 = ggplot(fitdf, aes(x=B11, y=B12, col=lp)) + 
+  geom_hex(bins=50) + scale_fill_viridis_c() + 
+  xlab("B[1,1]") + 
+  ylab("B[1,2]") + 
+  labs(fill = "Frequency")
 
-#g1 = group_by(posterior_summaries_parII[grep("SD_proc",rownames(posterior_summaries_parII)),], iter) %>%
-#  summarize(m = max(Rhat,na.rm=T))
+g4 = ggplot(fitdf, aes(B11, B12, z=lp)) + 
+  stat_summary_hex(aes(z = lp), bins = 50, fun = mean) + scale_fill_viridis_c() + 
+  xlab("B[1,1]") + 
+  ylab("B[1,2]") + 
+  labs(fill = "Log posterior")
 
-#g2 = group_by(posterior_summaries_parII[grep("SD_obs",rownames(posterior_summaries_parII)),], iter) %>%
-#  summarize(m = max(Rhat,na.rm=T))
-
-#g3 = group_by(posterior_summaries_parII[grep("xx",rownames(posterior_summaries_parII)),], iter) %>%
-#  summarize(m = max(Rhat,na.rm=T))
+pdf("plots/B11_B12_tradeoff.pdf")
+gridExtra::grid.arrange(g3,g4,nrow=1)
+dev.off()

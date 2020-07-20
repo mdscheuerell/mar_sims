@@ -32,7 +32,7 @@ res_dir <- here("results")
 raw_dir <- here("results/raw_models")
 
 ## load grid of sim options
-grid <- readRDS("grid.rds")
+grid <- readRDS("grid.rds") #grid <- readRDS("grid_extended.rds")
 grid$batch = sort(rep(1:n_batch, ceiling(nrow(grid)/n_batch)))[1:nrow(grid)]
 
 ##-----------------
@@ -237,7 +237,7 @@ for(ii in which(grid$batch == this_batch)) {
              silent=TRUE)
 
   ## save raw results to a file
-  saveRDS(fit, file = file.path(raw_dir, paste0("run_", ii, ".rds")))
+  saveRDS(fit, file = file.path(raw_dir, paste0("run_", ii, "_extended.rds")))
 
   ## get summary of mcmc results
   pars <- as.data.frame(summary(fit, probs = c(0.025, 0.1, 0.25, 0.5, 0.75, 0.9, 0.975))$summary)
@@ -247,7 +247,7 @@ for(ii in which(grid$batch == this_batch)) {
   post_estimates <- rbind(post_estimates, pars)
 
   ## save table of posterior summaries
-  saveRDS(post_estimates, file = file.path(res_dir, paste0("posterior_summaries_",this_batch,".rds")))
+  saveRDS(post_estimates, file = file.path(res_dir, paste0("posterior_summaries_",this_batch,"_extended.rds")))
 }
 
 
