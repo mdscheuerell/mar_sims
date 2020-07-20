@@ -96,6 +96,18 @@ a, a > code {
   right: 2em;
   font-size: 80%;
 }
+.photo-credit {
+  position: fixed;
+  bottom: 3em;
+  right: 10em;
+  font-size: 80%;
+}
+.photo-credit-2 {
+  position: fixed;
+  bottom: 4em;
+  right: 8em;
+  font-size: 80%;
+}
 .remark-code, .remark-inline-code { font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace; }
 .remark-code-line-highlighted     { background-color: #ffff88; }
 .remark-slide-number {
