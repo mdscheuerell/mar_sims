@@ -42,4 +42,29 @@ class: frimg
 .pull-right.center[Steve Katz (Wash St Univ)]
 
 
+---
+
+class: center, middle
+
+# Estimating species interactions is a long standing goal 
+
+
+---
+
+class: frimg, inverse
+
+background-image: url(figs/bob_paine.jpg)
+background-size: 60%
+
+.gray-text.futnote[Photo: A Paine]
+
+
+---
+
+class: frimg, inverse
+
+background-image: url(figs/steve_carpenter.jpg)
+background-size: 70%
+
+.gray-text.futnote[Photo: A Hinterthuer]
 
