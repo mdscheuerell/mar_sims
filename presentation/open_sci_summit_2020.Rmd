@@ -16,7 +16,7 @@ library(huxtable)
 
 class: center, middle
 
-# Effects of prior information on Bayesian estimates of species interactions from time series data
+# Effects of prior information on estimates of species interactions from time series data
 
 ## Mark Scheuerell
 
@@ -29,7 +29,7 @@ _USGS WA Cooperative Fish and Wildlife Research Unit<br>School of Aquatic and Fi
 
 ---
 
-class: frimg
+class: frimgB
 
 # Coauthors
 
@@ -46,7 +46,7 @@ class: frimg
 
 class: center, middle, inverse
 
-# Estimating species interactions is a long standing goal in ecology
+# Estimating species interactions is a long-standing goal in ecology
 
 
 ---
@@ -56,7 +56,7 @@ class: frimg, inverse
 background-image: url(figs/bob_paine.jpg)
 background-size: 60%
 
-.gray-text.futnote[Photo: Anne Paine]
+.gray-text.photo-credit.center[Photo: Anne Paine]
 
 
 ---
@@ -66,14 +66,14 @@ class: frimg, inverse
 background-image: url(figs/steve_carpenter.jpg)
 background-size: 70%
 
-.gray-text.futnote[Photo: Adam Hinterthuer]
+.gray-text.photo-credit-2[Photo: Adam Hinterthuer]
 
 
 ---
 
 # Estimating interactions from time series
 
-```{r plot_many_ts, echo=FALSE, dpi=300, fig.height=4, fig.width=7, fig.align='center'}
+```{r plot_many_ts, echo=FALSE, dpi=300, fig.height=4, fig.width=8, fig.align='center'}
 NN <- 3
 TT <- 30
 MM <- 3
@@ -268,11 +268,24 @@ background-size: 14%
 
 * 30 times steps (50 total - 20 burn-in)
 
-* varying inensity of density-dependence
+* varying intensity of density-dependence
 
 * varying interaction strengths
 
 * varying levels of observation & process errors
+
+
+
+---
+
+class: frimg
+background-image: url(figs/linear_food_chain.png)
+background-position: 90% 50%
+background-size: 14%
+
+# Estimation of species interactions
+
+## State-space models fitted in `Stan`
 
 * varying certainty of prior information
 
@@ -301,3 +314,30 @@ background-position: 50% 75%
 background-size: 60%
 
 # Sampling error > environmental noise
+
+
+---
+
+# Future directions
+
+## .blue-text[Examine other food web configurations]
+
+## .orange-text[Examine effects of 2+ observations of the process]
+
+## .purple-text[Compare results to likelihood based methods]
+
+
+---
+
+# Project repo on GitHub
+
+### https://github.com/mdscheuerell/mar_sims
+
+# Mark's website
+
+### https://faculty.washington.edu/scheuerl/
+
+.purple-text.futnote[`r icon::fa("envelope")` scheuerl@uw.edu]
+
+.blue-text.citation[`r icon::fa("twitter")` @mark_scheuerell]
+
