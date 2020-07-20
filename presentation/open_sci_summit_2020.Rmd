@@ -114,4 +114,124 @@ for(i in 1:NN) {
 ```
 
 
+---
+
+# Multivariate autoregressive models
+
+## Describe .blue-text[community dynamics] over time
+
+```{r state_diag, dpi=300, fig.height=4, fig.width=8, out.height="100%", out.width="100%", fig.align='center', echo=FALSE, warning=FALSE}
+par(mai=c(0.8,0.8,0,0), omi=rep(0,4))
+## boundaries
+ss <- 5
+nn <- 7
+rr <- ss*3
+cc <- ss*nn
+## mid-points
+xm <- ss/2 + seq(0,cc-ss,ss)
+ymt <- rr - ss/2
+ymb <- ss/2
+## arrow locs
+x0t <- seq(ss, by=2*ss, len=3)
+x1t <- x0t + ss
+## empty plot space
+plot(c(0,cc), c(0,rr), type="n", xlab="", ylab="",
+     xaxt="n", yaxt="n", bty="n")
+## top row: state
+symbols(x=xm[c(1,3,5,7)], y=rep(ymt,4), circles=rep(ss/2,4),
+        lty="solid",  fg=NA, bg="#488fdf",
+        inches=FALSE, add=TRUE, lwd=3)
+# text("Truth", x=-ss, y=ymt, adj=c(0,0.5), xpd=NA,
+#      cex=2, col="#488fdf")
+arrows(x0=x0t,x1=x1t,y0=ymt, col="#488fdf", lwd=3, length=0.12)
+## Time or space
+arrows(x0=ss/2, x1=cc-ss/2, y0=-ss/3+ss*2,
+       length=0.12, lwd=3, xpd=NA)
+text("Time", x=cc/2, y=-ss/2+ss*2, xpd=NA, pos=1, cex=2)
+```
+
+.gray-text.citation[Ives et al (2003) *Ecology*]
+
+
+---
+
+class: center, middle, inverse
+
+# Observing nature can be easy
+
+---
+
+class: frimg, bottom, right
+background-image: url(figs/sockeye.jpg)
+background-size: cover
+
+# .white-text[How many sockeye are there?]
+
+---
+
+class: center, middle, inverse
+
+# Observing nature can also be hard
+
+---
+
+class: frimg, bottom, right
+background-image: url(figs/sockeye.jpg)
+background-size: cover
+
+# .white-text[How many mayflies are there?]
+
+---
+
+# Multivariate autoregressive models
+
+## .purple-text[Data] = .blue-text[Truth] &#177; .red-text[Errors]
+
+```{r obs_diag, dpi=300, fig.height=4, fig.width=8, out.height="100%", out.width="100%", fig.align='center', echo=FALSE, warning=FALSE}
+par(mai=c(0.8,0.8,0,0), omi=rep(0,4))
+## arrow locs
+x0t <- seq(ss, by=2*ss, len=3)
+x1t <- x0t + ss
+y0b <- rr - ss
+y1b <- ss
+## empty plot space
+plot(c(0,cc), c(0,rr), type="n", xlab="", ylab="",
+     xaxt="n", yaxt="n", bty="n")
+## top row: state
+symbols(x=xm[c(1,3,5,7)], y=rep(ymt,4), circles=rep(ss/2,4),
+        lty="solid",  fg=NA, bg="#488fdf",
+        inches=FALSE, add=TRUE, lwd=3)
+text("Truth", x=-ss, y=ymt, adj=c(0,0.5), xpd=NA,
+     cex=2, col="#488fdf")
+## arrows
+arrows(x0=x0t,x1=x1t,y0=ymt, col="#488fdf", lwd=3, length=0.12)
+## bottom row: obs
+symbols(x=xm[c(1,3,5,7)], y=rep(ss/2,4), circles=rep(ss/2,4),
+        lty="solid",  fg=NA, bg="#844870",
+        inches=FALSE, add=TRUE, lwd=3)
+text("Data", x=-ss, y=ss/2, adj=c(0,0.5), xpd=NA,
+     cex=2, col="#844870")
+## arrows
+arrows(x0=xm[c(1,3,5,7)], y0=y0b, y1=y1b,
+       col="#c10101", lwd=3, length=0.12)
+## Time or space
+arrows(x0=ss/2, x1=cc-ss/2, y0=-ss/3,
+       length=0.12, lwd=3, xpd=NA)
+text("Time", x=cc/2, y=-ss/2, xpd=NA, pos=1, cex=2)
+```
+
+---
+
+# Multivariate autoregressive models
+
+## .blue-text.under[State model]
+
+## .blue-text[Density]<sub><i>t</i></sub> = .blue-text[Density]<sub><i>t</i>-1</sub> + .orange-text[Environment]<sub><i>t</i></sub> + .gray-text[error]<sub><i>t</i></sub>
+
+## .purple-text.under[Observation model]
+
+## .purple-text[Data]<sub><i>t</i></sub> = .blue-text[Density]<sub><i>t</i></sub> + .red-text[error]<sub><i>t</i></sub>
+
+.gray-text.citation[Ives et al (2003) *Ecology*]
+
 
