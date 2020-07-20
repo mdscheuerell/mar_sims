@@ -266,6 +266,38 @@ background-size: 14%
 
 ## 4-member food chain
 
+* 30 times steps (50 total - 20 burn-in)
+
+* varying inensity of density-dependence
+
+* varying interaction strengths
+
+* varying levels of observation & process errors
+
+* varying certainty of prior information
 
 
+---
 
+class: center, middle, inverse
+# Effects on interaction strengths
+
+
+---
+
+class: center
+background-image: url(figs/B_pro_gt_obs.png)
+background-position: 50% 75%
+background-size: 60%
+
+# Environmental noise > sampling error
+
+
+---
+
+class: center
+background-image: url(figs/B_obs_gt_pro.png)
+background-position: 50% 75%
+background-size: 60%
+
+# Sampling error > environmental noise
