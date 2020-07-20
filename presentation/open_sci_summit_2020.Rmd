@@ -56,7 +56,7 @@ class: frimg, inverse
 background-image: url(figs/bob_paine.jpg)
 background-size: 60%
 
-.gray-text.futnote[Photo: A Paine]
+.gray-text.futnote[Photo: Anne Paine]
 
 
 ---
@@ -66,7 +66,7 @@ class: frimg, inverse
 background-image: url(figs/steve_carpenter.jpg)
 background-size: 70%
 
-.gray-text.futnote[Photo: A Hinterthuer]
+.gray-text.futnote[Photo: Adam Hinterthuer]
 
 
 ---
@@ -233,5 +233,39 @@ text("Time", x=cc/2, y=-ss/2, xpd=NA, pos=1, cex=2)
 ## .purple-text[Data]<sub><i>t</i></sub> = .blue-text[Density]<sub><i>t</i></sub> + .red-text[error]<sub><i>t</i></sub>
 
 .gray-text.citation[Ives et al (2003) *Ecology*]
+
+
+---
+
+# How does one actually do this?
+
+## .green-text[Canned **R** packages] (`dlm`, `vars`, `MARSS`<sup>*</sup>)
+
+## .blue-text[Code-your-own] (`JAGS`, `Stan`, `greta`)
+
+.footnoteSm.gray-text[
+<sup>\*</sup>Holmes, Ward, Scheuerell (2020) _Analysis of multivariate time-series using the MARSS package_
+]
+
+
+---
+
+class: center, middle, inverse
+
+# How accurate and precise are these models?
+
+
+---
+
+class: frimg
+background-image: url(figs/linear_food_chain.png)
+background-position: 90% 50%
+background-size: 14%
+
+# Simulation of species interactions
+
+## 4-member food chain
+
+
 
 
