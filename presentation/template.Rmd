@@ -1,0 +1,423 @@
+---
+output:
+  xaringan::moon_reader:
+    css: "my-theme.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+---
+
+```{r setup, include=FALSE, message=FALSE}
+options(htmltools.dir.version = FALSE, servr.daemon = TRUE)
+library(huxtable)
+```
+
+
+class: center, middle
+# This is where you write a really great title on a white background
+## Mark Scheuerell
+_USGS WA Cooperative Fish and Wildlife Research Unit<br>School of Aquatic and Fishery Sciences<br>University of Washington<br>_
+
+.purple-text.futnote[`r icon::fa("envelope")` scheuerl@uw.edu]
+
+.blue-text.citation[`r icon::fa("twitter")` @mark_scheuerell]
+
+
+---
+
+# A standard bulleted list
+
+* create something
+
+* discuss it with others
+
+* .red-text[make it red]
+
+---
+
+# A standard numbered list
+
+1. the first thing: create
+
+2. the second thing: discuss
+
+3. the third thing: .red-text[make it red]
+
+---
+
+# Hello there
+## How are you?
+### .red-text[Awesome!]
+
+This slide shows all 3 levels for headers (titles).
+
+It's easy to make .orange-text[colored] .blue-text[text]. To do so, you need to:
+
+1. change the css stylesheet
+
+(press arrow to see next thing);
+
+--
+
+2. Just kidding, that's all
+
+---
+class: frimg
+
+# Landscape pic on left plus text
+
+.img-left-land[![](figs/rampart_lakes.jpg)]
+
+.img-right-text[
+* this pic is awesome
+
+* seriously, though
+]
+
+---
+class: frimg
+
+# Square pic on left plus text
+
+.pull-left[![](figs/me_head.jpeg)]
+
+.pull-right[
+* this pic is awesome
+
+* seriously, though
+]
+
+---
+class: frimg
+
+# .right[ Landscape pic on right plus text]
+
+.img-right-land[![](figs/rampart_lakes.jpg)]
+
+.img-left-text[
+* this pic is awesome
+
+* seriously, though
+]
+
+---
+class: frimg, large
+
+# .right[pic on right with larger font size]
+
+.pull-left[
+* this pic is awesome
+
+* seriously, though
+]
+
+.pull-right[![](figs/me_head.jpeg)]
+
+---
+class: frimg, right
+
+# pic on right plus text
+
+.pull-left-img[
+I could say something about the pic
+
+but at this point there is really nothing left to say
+]
+
+.pull-right[![](figs/me_head.jpeg)]
+
+---
+class: frimg
+
+# 2 pics with text on bottom
+
+.pull-left[![Nice shot!](figs/me_head.jpeg)]
+
+.pull-right[![](figs/me_head.jpeg)]
+
+.pull-left.center[Center caption: Nice shot!]
+
+.right[Right caption: Not too bad]
+
+---
+class: frimg, large
+
+# 2 pics with text on top & bigger font
+
+.pull-left.center[A centered title]
+
+.pull-right.center[Another centered title]
+
+.pull-left[![](figs/me_head.jpeg)]
+
+.pull-right[![](figs/me_head.jpeg)]
+
+---
+class: frimg, center
+background-image: url(figs/me_head.jpeg)
+background-size: 300px 300px
+
+# A centered pic (background)
+
+---
+class: frimg, center
+# Centered pic (object); text above
+<img src="figs/me_head.jpeg", alt="", height=300, width=300>
+
+---
+class: frimg, center, bottom
+<img src="figs/me_head.jpeg", alt="", height=300, width=300>
+# Centered pic (object); text below
+
+---
+class: center, bottom, inverse-black
+
+# You only live once!
+
+---
+
+# Math expressions: inline
+
+You can write LaTeX math expressions inside a pair of dollar signs, such that
+
+```
+$\alpha + \beta = \gamma$
+```
+
+renders to
+
+$\alpha + \beta = \gamma$
+
+---
+
+# Math expressions: display
+
+You can use the LaTeX display style with double $. Note that display equations are always centered on the page. For example,
+
+```
+$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
+```
+renders to
+
+$$\bar{X}=\frac{1}{n}\sum_{i=1}^nX_i$$
+
+--
+You can also group multiple equations with a `\\` suffix, such that:
+
+```
+$$\mathbf{x}_t = \mathbf{x}_{t-1} + \mathbf{w}_t \\
+  \mathbf{y}_t = \mathbf{x}_t + \mathbf{v}_t$$
+```
+renders to
+
+$$\mathbf{x}_t = \mathbf{x}_{t-1} + \mathbf{w}_t \\
+  \mathbf{y}_t = \mathbf{x}_t + \mathbf{v}_t$$
+
+---
+
+# Math side-by-side
+
+Here are two sets of equations. To do this, you have to use inline math (single $) with each equation on its own line.
+
+.pull-left.center[
+.under[Random walk]
+
+$\mathbf{x}_t = \mathbf{x}_{t-1} + \mathbf{w}_t$
+
+$\mathbf{y}_t = \mathbf{x}_t + \mathbf{v}_t$
+]
+
+.pull-right.center[
+.under[Biased random walk]
+
+$\boldsymbol{\theta}_t = \boldsymbol{\theta}_{t-1} + \boldsymbol{\mu} + \boldsymbol{\omega}_t$
+
+$\mathbf{y}_t = \boldsymbol{\theta}_t + \boldsymbol{\eta}_t$
+
+]
+
+---
+class: inverse-blue, middle, center
+
+# This is getting good
+
+---
+
+# Some code displayed
+
+Here is an example of a YAML code block that uses .gray-text[`xaringan::moon_reader`] as a wrapper for remark.js<sup>*</sup>. 
+
+```yaml
+---
+title: "A Cool Presentation"
+output:
+  xaringan::moon_reader
+    yolo: true
+    nature:
+      autoplay: 30000
+---
+```
+
+See the help page .gray-text[`?xaringan::moon_reader`] for all possible options that you can use.
+
+.footnote[\* check out Xie 2017]
+.citation[(see Xie 2017 for more details)]
+
+---
+
+# R Code with output
+
+```{r comment='##'}
+## a boring regression
+fit = lm(dist ~ 1 + speed, data = cars)
+coef(summary(fit))
+```
+
+---
+
+# Code highlighting
+
+You can use `{{}}` in **R** code chunks to highlight lines of code. To do so, you must also add the option .gray-text[`highlightLines: true`] in the .gray-text[`nature`] part of the YAML.
+
+.orange-text[Input:]
+```r
+if(TRUE) {
+  {{ message("Very important!") }}
+}
+```
+.blue-text[Output:]
+```{r}
+if(TRUE) {
+  {{ message("Very important!") }}
+}
+```
+
+---
+
+# R Plots - square
+
+```{r cars, dpi=300, fig.height=4, fig.width=4, out.height="50%", out.width="50%", fig.align='center'}
+par(mai = c(0.9, 0.9, 0.1, 0.1), omi=c(0,0,0,0))
+plot(cars, pch = 19, las = 1)
+abline(fit, lwd = 2, col="gray")
+```
+
+---
+
+# R Plots - rectangle
+
+```{r timeseries, dpi=300, fig.height=4, fig.width=6, out.height="80%", out.width="80%", fig.align='center'}
+par(mai = c(0.8, 0.8, 0.2, 0.2))
+plot.ts(cumsum(rnorm(100)), las=1, col="blue",
+        ylab=expression(italic(x[t])))
+```
+
+---
+
+# Tables
+
+If you want to generate a table, make sure it is in the HTML format (instead of Markdown or other formats), e.g.,
+
+```{r}
+knitr::kable(head(iris, 4), format = 'html',
+             align=c('c', 'c', 'r', 'l', 'r'))
+```
+
+---
+
+# Tables 2
+
+Here is a table using the **huxtable** package.
+
+```{r}
+ht <- as_hux(head(iris, 4), add_colnames=TRUE)
+right_padding(ht) <- 10; left_padding(ht)  <- 10
+bold(ht)[1,] <- TRUE; italic(ht)[2:5,5] <- TRUE
+top_border(ht)[1,] <- 3
+bottom_border(ht)[1,] <- 1; bottom_border(ht)[5,] <- 3
+number_format(ht) <- 1
+align(ht) <- 'center'
+ht
+```
+
+---
+
+# Timers
+
+- Slides can be automatically played if you set the .gary-text[`autoplay`] option under .gray-text[`nature`]. Note that time has units of milliseconds.
+
+    ```yaml
+    output:
+      xaringan::moon_reader:
+        nature:
+          autoplay: 30000
+    ```
+
+--
+
+- A countdown timer can be added to every slide using the .gary-text[`countdown`] option under .gray-text[`nature`]. Again, time is in milliseconds.
+
+    ```yaml
+    output:
+      xaringan::moon_reader:
+        nature:
+          countdown: 60000
+    ```
+
+You will see a timer counting down from `01:00`, `00:59`, `00:58`, ... When the timer hits 00:00, the timer will continue but the time turns red.
+
+---
+class: small
+
+# Using offline
+
+- To make slides work offline, you need to download a copy of remark.js in advance, because **xaringan** uses the online version by default (see the help page `?xaringan::moon_reader`).
+
+- You can use `xaringan::summon_remark()` to download the latest or a specified version of remark.js. By default, it is downloaded to `libs/remark-latest.min.js`.
+
+- Then change the `chakra` option in YAML to point to this file, e.g.
+
+    ```yaml
+    output:
+      xaringan::moon_reader:
+        chakra: libs/remark-latest.min.js
+    ```
+
+- If you used Google fonts in slides (the default theme uses _Yanone Kaffeesatz_, _Droid Serif_, and _Source Code Pro_), they won't work offline unless you download or install them locally. The Heroku app [google-webfonts-helper](https://google-webfonts-helper.herokuapp.com/fonts) can help you download fonts and generate the necessary CSS.
+
+
+---
+
+class: inverse, middle, center
+background-image: url(https://upload.wikimedia.org/wikipedia/commons/3/39/Naruto_Shiki_Fujin.svg)
+background-size: contain
+
+# Naruto
+
+---
+class: small
+background-image: url(https://upload.wikimedia.org/wikipedia/commons/b/be/Sharingan_triple.svg)
+background-size: 100px
+background-position: 90% 8%
+
+# Sharingan
+
+The R package name **xaringan** was derived<sup>1</sup> from **Sharingan**, a dōjutsu in the Japanese anime _Naruto_ with two abilities:
+
+- the "Eye of Insight"
+
+- the "Eye of Hypnotism"
+
+---
+
+class: center, middle
+# This is where you write a really great title on a white background
+## Mark Scheuerell
+.large[_Northwest Fisheries Science Center<br>National Oceanic and Atmospheric Administration<br>Seattle, WA_]
+
+.futnote.blue-text[mark.scheuerell@noaa.gov]
+
+.citation.blue-text[@mark_scheuerell]
+
+
