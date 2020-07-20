@@ -1,0 +1,45 @@
+---
+output:
+  xaringan::moon_reader:
+    css: "my-theme.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+---
+
+```{r setup, include=FALSE, message=FALSE}
+options(htmltools.dir.version = FALSE, servr.daemon = TRUE)
+library(huxtable)
+```
+
+
+class: center, middle
+
+# Effects of prior information on Bayesian estimates of species interactions from time series data
+
+## Mark Scheuerell
+
+_USGS WA Cooperative Fish and Wildlife Research Unit<br>School of Aquatic and Fishery Sciences<br>University of Washington<br>_
+
+.purple-text.futnote[`r icon::fa("envelope")` scheuerl@uw.edu]
+
+.blue-text.citation[`r icon::fa("twitter")` @mark_scheuerell]
+
+
+---
+
+class: frimg
+
+# Coauthors
+
+.pull-left[![](figs/eric_ward.jpg)]
+
+.pull-right[![](figs/steve_katz.jpg)]
+
+.pull-left.center[Eric Ward (NOAA)]
+
+.pull-right.center[Steve Katz (Wash St Univ)]
+
+
+
