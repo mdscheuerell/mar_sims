@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>open_sci_summit_2020.utf8</title>
+    <meta charset="utf-8">
+    <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="my-theme.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: center, middle
+
+# Effects of prior information on estimates of species interactions from time series data
+
+## Mark Scheuerell
+
+_USGS WA Cooperative Fish and Wildlife Research Unit&lt;br&gt;School of Aquatic and Fishery Sciences&lt;br&gt;University of Washington&lt;br&gt;_
+
+.purple-text.futnote[<i class="fa  fa-envelope "></i> scheuerl@uw.edu]
+
+.blue-text.citation[<i class="fa  fa-twitter "></i> @mark_scheuerell]
+
+
+---
+
+class: frimgB
+
+# Coauthors
+
+.pull-left[![](figs/eric_ward.jpg)]
+
+.pull-right[![](figs/steve_katz.jpg)]
+
+.pull-left.center[Eric Ward (NOAA)]
+
+.pull-right.center[Steve Katz (Washington St Univ)]
+
+
+---
+
+class: center, middle, inverse
+
+# Estimating species interactions is a long-standing goal in ecology
+
+
+---
+
+class: middle
+
+.green-text[
+# Predation
+]
+.blue-text.center[
+# Competition
+]
+.orange-text.right[
+# Facilitation
+]
+
+---
+
+class: frimg, inverse
+
+background-image: url(figs/bob_paine.jpg)
+background-size: 60%
+
+.gray-text.photo-credit.center[Photo: Anne Paine]
+
+
+---
+
+class: frimg, inverse
+
+background-image: url(figs/steve_carpenter.jpg)
+background-size: 70%
+
+.gray-text.photo-credit-2[Photo: Adam Hinterthuer]
+
+
+---
+
+# Estimating interactions from time series
+
+&lt;img src="open_sci_summit_2020_files/figure-html/plot_many_ts-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# Multivariate autoregressive models
+
+## Describe .blue-text[community dynamics] over time
+
+&lt;img src="open_sci_summit_2020_files/figure-html/state_diag-1.png" width="100%" height="100%" style="display: block; margin: auto;" /&gt;
+
+.gray-text.citation[Ives et al (2003) *Ecology*]
+
+
+---
+
+class: center, middle, inverse
+
+# Observing nature can be easy
+
+---
+
+class: frimg, bottom, right
+background-image: url(figs/sockeye.jpg)
+background-size: cover
+
+# .white-text[How many sockeye are there?]
+
+---
+
+class: center, middle, inverse
+
+# Observing nature can also be hard
+
+---
+
+class: frimg, bottom, right
+background-image: url(figs/sockeye.jpg)
+background-size: cover
+
+# .white-text[How many mayflies are there?]
+
+---
+
+# Multivariate autoregressive models
+
+## .purple-text[Data] = .blue-text[Truth] &amp;#177; .red-text[Errors]
+
+&lt;img src="open_sci_summit_2020_files/figure-html/obs_diag-1.png" width="100%" height="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Multivariate autoregressive models
+
+## .blue-text.under[State model]
+
+## .blue-text[Density&lt;sub&gt;&lt;i&gt;t&lt;/i&gt;&lt;/sub&gt;] = *f* (.blue-text[Density&lt;sub&gt;&lt;i&gt;t&lt;/i&gt;-1 &amp;nbsp;&lt;/sub&gt;], .orange-text[Environment&lt;sub&gt;&lt;i&gt;t-h &amp;nbsp;&lt;/i&gt;&lt;/sub&gt;], .gray-text[error&lt;sub&gt;&lt;i&gt;t &amp;nbsp;&lt;/i&gt;&lt;/sub&gt;])
+
+## .purple-text.under[Observation model]
+
+## .purple-text[Data&lt;sub&gt;&lt;i&gt;t&lt;/i&gt;&lt;/sub&gt;] = *g* (.blue-text[Density&lt;sub&gt;&lt;i&gt;t &amp;nbsp;&lt;/i&gt;&lt;/sub&gt;], .red-text[error&lt;sub&gt;&lt;i&gt;t &amp;nbsp;&lt;/i&gt;&lt;/sub&gt;])
+
+.gray-text.citation[Ives et al (2003) *Ecology*]
+
+
+---
+
+class: center, middle, inverse
+
+# How does one actually do this?
+
+
+---
+
+# .green-text[Canned **R** packages]
+
+## `dlm`, `vars`, `MARSS`&lt;sup&gt;*&lt;/sup&gt;
+
+
+.footnoteSm.gray-text[
+&lt;sup&gt;\*&lt;/sup&gt;Holmes, Ward, Scheuerell (2020) _Analysis of multivariate time-series using the MARSS package_
+]
+
+
+---
+
+# .green-text[Canned **R** packages]
+
+## `dlm`, `vars`, `MARSS`&lt;sup&gt;*&lt;/sup&gt;
+
+&lt;br&gt;
+
+# .blue-text[Code-your-own]
+
+## `JAGS`, `Stan`, `greta`
+
+.footnoteSm.gray-text[
+&lt;sup&gt;\*&lt;/sup&gt;Holmes, Ward, Scheuerell (2020) _Analysis of multivariate time-series using the MARSS package_
+]
+
+
+---
+
+class: center, middle, inverse
+
+# How accurate and precise are these models?
+
+
+---
+
+class: frimg
+background-image: url(figs/linear_food_chain.png)
+background-position: 90% 50%
+background-size: 14%
+
+# Simulating species interactions
+
+## 4-member food chain
+
+* 30 times steps (50 total - 20 burn-in)
+
+* varying intensity of density-dependence
+
+* varying interaction strengths
+
+* varying levels of sampling &amp; process errors
+
+
+---
+
+class: frimg
+background-image: url(figs/linear_food_chain.png)
+background-position: 90% 50%
+background-size: 14%
+
+# Estimating species interactions
+
+## 4-member food chain
+
+* state-space models fitted in `Stan`
+
+* varying certainty of prior information
+
+
+---
+
+# Bayes' rule
+
+## .green-text[Posterior belief] &amp;#x221D; .orange-text[Prior information] &amp;times; .blue-text[Data likelihood]
+
+
+---
+
+class: center, middle, inverse
+
+# Effects on interaction strengths
+
+
+---
+
+class: center
+background-image: url(figs/B_pro_gt_obs.png)
+background-position: 50% 75%
+background-size: 60%
+
+# Environmental noise &gt; sampling error
+
+
+---
+
+class: center
+background-image: url(figs/B_obs_gt_pro.png)
+background-position: 50% 75%
+background-size: 60%
+
+# Sampling error &gt; environmental noise
+
+
+---
+
+# Future directions
+
+## .blue-text[Examine other food web configurations]
+
+
+---
+
+# Future directions
+
+## .blue-text[Examine other food web configurations]
+
+## .orange-text[Examine effects of 2+ observations of the process]
+
+
+---
+
+# Future directions
+
+## .blue-text[Examine other food web configurations]
+
+## .orange-text[Examine effects of 2+ observations of the process]
+
+## .purple-text[Compare results to likelihood based methods]
+
+
+---
+
+# Project repo on GitHub
+
+### https://github.com/mdscheuerell/mar_sims
+
+# Mark's website
+
+### https://faculty.washington.edu/scheuerl/
+
+.purple-text.futnote[<i class="fa  fa-envelope "></i> scheuerl@uw.edu]
+
+.blue-text.citation[<i class="fa  fa-twitter "></i> @mark_scheuerell]
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
