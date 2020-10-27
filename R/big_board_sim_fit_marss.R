@@ -124,16 +124,18 @@ for(ii in 1:nrow(grid)) {
   saveRDS(fit, file = file.path(raw_dir, paste0("marss_", ii, ".rds")))
 
 }
+
 grid$id = seq(1,nrow(grid))
-marss_pars = matrix(nrow=nrow(grid), ncol = 13)
+marss_pars = matrix(nrow=nrow(grid), ncol = 14)
 for(ii in 1:nrow(grid)) {
   fit = readRDS(file.path(raw_dir, paste0("marss_", ii, ".rds")))
   pars = c(fit$par$B, fit$par$Q, fit$par$Q)
   marss_pars[ii,1] = ii
-  marss_pars[ii,2:13] = c(fit$par$B, fit$par$R, fit$par$Q)
+  marss_pars[ii,-1] = c(fit$par$B, fit$par$R, fit$par$Q, fit$convergence)
 }
-colnames(marss_pars) = c("id","b11","b21","b12","b22","b32","b23","b33","b43","b34","b44","R","Q")
+colnames(marss_pars) = c("id","b11","b21","b12","b22","b32","b23","b33","b43","b34","b44","R","Q","convergence")
 marss_pars = cbind(grid, marss_pars)
+marss_pars = marss_pars[,-12]
 saveRDS(marss_pars,"marss_pars.rds")
 
 
