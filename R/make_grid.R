@@ -1,7 +1,7 @@
 
 # Proposed simulation framework / datasets
 set.seed(123)
-replicates = 40 # number of replicates/combination of different parameters
+replicates = 100 # number of replicates/combination of different parameters
 
 grid = expand.grid("obs_sd" = c(0.2, 0.4, 0.8),
   "pro_sd" = c(0.1, 0.2, 0.4),
