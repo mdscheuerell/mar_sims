@@ -3,7 +3,7 @@
 this_batch = 1 # 1, 2, 3
 
 
-n_batch = 3 # max - 3 by default
+n_batch = 1 # max - 3 by default
 
 ##-------------------
 ## initialize & load
@@ -102,8 +102,9 @@ init_vals <- function(chain_id = 1, n_off, n_species, n_time, n_na) {
 ## sim & fit
 ##-----------
 
-for(ii in which(grid$batch == this_batch)) {
-
+#for(ii in which(grid$batch == this_batch)) {
+for(ii in 1:nrow(grid)) {
+    
   ## set seed
   set.seed(grid$seed[ii])
 
