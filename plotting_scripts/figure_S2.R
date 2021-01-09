@@ -68,6 +68,12 @@ for(i in 1:4) {
   }
 }
 
+#mean(c(0.431,0.464,0.534,0.6)/seq(0.5,0.8,length.out=4))
+dplyr::filter(post, obs_CV==1, pro_CV==1, !is.na(shortpar)) %>%
+  dplyr::group_by(b_CV,shortpar) %>% 
+  dplyr::summarize(m = mean(mean)) %>%
+  dplyr::filter(b_CV==1, shortpar %in% c("B[1,1]","B[2,2]","B[3,3]","B[4,4]"))
+  
 pdf("plots/Figure_S2_estimated_b_elements_bCV.pdf")
 g5 = ggplot(dplyr::filter(post, obs_CV==1, pro_CV==1, !is.na(shortpar)),
        aes(x=as.factor(b_CV), y=mean,group=as.factor(b_CV))) +
