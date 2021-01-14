@@ -31,7 +31,8 @@ x$true[which(x$par=="Bmat[4,3]")] = 0.1
 x$true[which(x$par=="Bmat[4,4]")] = 0.8
 
 g1 = ggplot(x, aes(scenario,mean,group=scenario, col=scenario, fill=scenario)) + 
-  geom_boxplot(alpha=0.4,outlier.shape = NA) + 
+  geom_boxplot(alpha=0.3,outlier.shape = NA) + 
+  geom_point(alpha=0.1)+
   ylab("Estimated B parameter") + 
   xlab("Scenario")+ 
   facet_wrap(~par,scale="free_y") + 
