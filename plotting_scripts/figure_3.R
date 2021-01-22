@@ -30,19 +30,19 @@ x$true[which(x$par=="Bmat[3,4]")] = -0.3
 x$true[which(x$par=="Bmat[4,3]")] = 0.1
 x$true[which(x$par=="Bmat[4,4]")] = 0.8
 
-g1 = ggplot(x, aes(scenario,mean,group=scenario, col=scenario, fill=scenario)) + 
-  geom_boxplot(alpha=0.3,outlier.shape = NA) + 
+g1 = ggplot(x, aes(scenario,mean,group=scenario, col=scenario, fill=scenario)) +
+  geom_boxplot(alpha=0.3,outlier.shape = NA) +
   geom_point(alpha=0.1)+
-  ylab("Estimated B parameter") + 
-  xlab("Scenario")+ 
-  facet_wrap(~par,scale="free_y") + 
-  geom_hline(aes(yintercept = true),col="red",alpha=0.3) + 
-  scale_fill_viridis(discrete = TRUE, end=0.7) + 
-  scale_color_viridis(discrete = TRUE, end=0.7) + 
-  theme_bw() + 
+  ylab("Estimated B parameter") +
+  xlab("Scenario")+
+  facet_wrap(~par,scale="free_y") +
+  geom_hline(aes(yintercept = true),col="red",alpha=0.3) +
+  scale_fill_viridis(discrete = TRUE, end=0.7) +
+  scale_color_viridis(discrete = TRUE, end=0.7) +
+  theme_bw() +
   theme(legend.position='none',strip.background = element_rect(color="black",fill="white")) +
   scale_x_discrete(labels = c('0.2, 0.4' = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.4"))),
-    '0.4, 0.2'   = expression(atop(paste(sigma[obs],"= 0.4"),paste(sigma[pro],"= 0.4")))))
+    '0.4, 0.2'   = expression(atop(paste(sigma[obs],"= 0.4"),paste(sigma[pro],"= 0.2")))))
 pdf("plots/Figure_3.pdf")
 g1
 dev.off()
