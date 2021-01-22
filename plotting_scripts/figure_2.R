@@ -13,13 +13,13 @@ post$par = rownames(post)
 # grid$sd_pro_est = post$mean[sd_pro_locs]
 
 # labels
-grid$pro_sd_label = factor(grid$pro_sd, 
+grid$pro_sd_label = factor(grid$pro_sd,
   labels = c("sigma[pro] == 0.1","sigma[pro] == 0.2","sigma[pro] == 0.4"))
-grid$obs_sd_label = factor(grid$obs_sd, 
+grid$obs_sd_label = factor(grid$obs_sd,
   labels = c("sigma[obs] == 0.2","sigma[obs] == 0.4","sigma[obs] == 0.8"))
-grid$pro_CV_label = factor(grid$pro_CV, 
+grid$pro_CV_label = factor(grid$pro_CV,
   labels = c("CV[pro] == 0.1","CV[pro] == 0.5","CV[pro] == 1"))
-grid$obs_CV_label = factor(grid$obs_CV, 
+grid$obs_CV_label = factor(grid$obs_CV,
   labels = c("CV[obs] == 0.1","CV[obs] == 0.5","CV[obs] == 1"))
 
 # make similar plots for interactions
@@ -40,7 +40,7 @@ for(i in 1:4) {
   }
 }
 
-post_summary = dplyr::filter(post, 
+post_summary = dplyr::filter(post,
   obs_CV==1,
   pro_CV==1,
   b_CV==1,
@@ -51,7 +51,7 @@ post_summary = dplyr::filter(post_summary,
   group %in% c("0.2 0.2","0.2 0.4","0.4 0.2","0.4 0.4"))
 post_summary$group = as.factor(as.character(post_summary$group))
 
-post_summary$group_label = factor(post_summary$group, 
+post_summary$group_label = factor(post_summary$group,
   labels = c("sigma[obs] == 0.2, sigma[pro] == 0.2",
     "sigma[obs] == 0.2, sigma[pro] == 0.4",
     "sigma[obs] == 0.4, sigma[pro] == 0.2",
@@ -64,18 +64,18 @@ post_summary$true[which(is.na(post_summary$mean))] = NA
 
 g1 = ggplot(post_summary,
   aes(x = group, y=mean, group=group, col=group,fill=group)) +
-  geom_boxplot(alpha=0.3,outlier.shape = NA) + 
+  geom_boxplot(alpha=0.3,outlier.shape = NA) +
   geom_point(alpha=0.1)+
-  #geom_sina(size=1, alpha=0.35) + 
-  #geom_violin(alpha=0.2,outlier.shape = NA,draw_quantiles = c(0.25, 0.5, 0.75)) + 
-  ylab("Estimated B parameter") + 
+  #geom_sina(size=1, alpha=0.35) +
+  #geom_violin(alpha=0.2,outlier.shape = NA,draw_quantiles = c(0.25, 0.5, 0.75)) +
+  ylab("Estimated B parameter") +
   xlab("Scenario") +
   facet_wrap(~shortpar,scale="free_y") +
-  geom_hline(aes(yintercept = true),col="red",alpha=0.3) + 
-  scale_fill_viridis(discrete = TRUE, end=0.7) + 
-  scale_color_viridis(discrete = TRUE, end=0.7) + 
-  theme_bw() + 
-  theme(legend.position='none',strip.background = element_rect(color="black",fill="white")) + 
+  geom_hline(aes(yintercept = true),col="red",alpha=0.3) +
+  scale_fill_viridis(discrete = TRUE, end=0.7) +
+  scale_color_viridis(discrete = TRUE, end=0.7) +
+  theme_bw() +
+  theme(legend.position='none',strip.background = element_rect(color="black",fill="white")) +
   scale_x_discrete(labels = c('0.2 0.2' = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.2"))),
     '0.2 0.4' = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.4"))),
     '0.4 0.2' = expression(atop(paste(sigma[obs],"= 0.4"), paste(sigma[pro],"= 0.2"))),
@@ -87,3 +87,33 @@ jpeg("plots/Figure_2.jpeg")
 g1
 dev.off()
 # Esrtimates of MLEs vs Posteriors
+
+# make coverage plot
+
+post_summary$coverage = 0
+indx = which((post_summary$true < post_summary$`75%`) & (post_summary$true > post_summary$`25%`))
+post_summary$coverage[indx] = 1
+
+cov_summary = group_by(post_summary, group, shortpar) %>%
+  summarize(group_label = group_label[1],
+            coverage = length(which(coverage==1))/100)
+
+p1 = ggplot(cov_summary,
+       aes(x = group, y=coverage, group=group, col=group,fill=group)) +
+  geom_point()+
+  #geom_sina(size=1, alpha=0.35) +
+  #geom_violin(alpha=0.2,outlier.shape = NA,draw_quantiles = c(0.25, 0.5, 0.75)) +
+  ylab("Estimated B parameter") +
+  xlab("Scenario") +
+  facet_wrap(~shortpar, scale="free_y") +
+  scale_fill_viridis(discrete = TRUE, end=0.7) +
+  scale_color_viridis(discrete = TRUE, end=0.7) +
+  theme_bw() +
+  theme(legend.position='none',strip.background = element_rect(color="black",fill="white")) +
+  scale_x_discrete(labels = c('0.2 0.2' = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.2"))),
+                              '0.2 0.4' = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.4"))),
+                              '0.4 0.2' = expression(atop(paste(sigma[obs],"= 0.4"), paste(sigma[pro],"= 0.2"))),
+                              '0.4 0.4'   = expression(atop(paste(sigma[obs],"= 0.4"),paste(sigma[pro],"= 0.4")))))
+pdf("plots/Figure_2_coverage.pdf")
+p1
+dev.off()
