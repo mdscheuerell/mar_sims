@@ -3,12 +3,15 @@
 this_batch = 1 # 1, 2, 3
 
 
-n_batch = 1 # max - 3 by default
+n_batch = 3 # max - 3 by default
 
 ##-------------------
 ## initialize & load
 ##-------------------
-
+if(!require("ggmcmc")) {
+  install.packages("ggmcmc")
+  library(ggmcmc)
+}
 if(!require("tvvarss")) {
   devtools::install_github("nwfsc-timeseries/tvvarss")
   library("tvvarss")
@@ -43,12 +46,12 @@ grid$batch = sort(rep(1:n_batch, ceiling(nrow(grid)/n_batch)))[1:nrow(grid)]
 int_types <- c("dd", "td", "bu", "cf")
 
 ## number of initial samples to discard
-n_toss <- 20
+n_toss <- 50
 
 ## stan options
-stan_model <- "marss_diag_unequal_Q_diag_equal_prior_R.stan"
+stan_model <- "marss_diag_unequal_Q_diag_equal_prior_R_1survey.stan"
 stan_ctrl <- list(max_treedepth = 25, adapt_delta = 0.999)
-stan_mcmc <- list(iter = 3000, warmup = 2000, chains = 3, thin = 1, refresh = 0)
+stan_mcmc <- list(iter = 8000, warmup = 3000, chains = 3, thin = 10, refresh = 0)
 
 ## interaction matrices (B)
 ## index 1 is bottom of food web; 4 is top
@@ -102,9 +105,9 @@ init_vals <- function(chain_id = 1, n_off, n_species, n_time, n_na) {
 ## sim & fit
 ##-----------
 
-#for(ii in which(grid$batch == this_batch)) {
-for(ii in 1:nrow(grid)) {
-    
+for(ii in which(grid$batch == this_batch)) {
+#for(ii in 1:nrow(grid)) {
+
   ## set seed
   set.seed(grid$seed[ii])
 
@@ -171,10 +174,10 @@ for(ii in 1:nrow(grid)) {
   col_indx_pos <- matrix(sort(rep(seq_len(ncol(yy)), nrow(yy))), nrow(yy), ncol(yy))[!is.na(yy)]
   n_pos <- length(row_indx_pos)
 
-  ## indices for NA values
-  row_indx_na <- matrix(rep(seq_len(nrow(yy)), ncol(yy)), nrow(yy), ncol(yy))[is.na(yy)]
-  col_indx_na <- matrix(sort(rep(seq_len(ncol(yy)), nrow(yy))), nrow(yy), ncol(yy))[is.na(yy)]
-  n_na <- length(row_indx_na)
+  # ## indices for NA values
+  # row_indx_na <- matrix(rep(seq_len(nrow(yy)), ncol(yy)), nrow(yy), ncol(yy))[is.na(yy)]
+  # col_indx_na <- matrix(sort(rep(seq_len(ncol(yy)), nrow(yy))), nrow(yy), ncol(yy))[is.na(yy)]
+  # n_na <- length(row_indx_na)
 
   ## data without NA
   yy <- yy[!is.na(yy)]
@@ -202,9 +205,9 @@ for(ii in 1:nrow(grid)) {
     n_pos= n_pos,
     row_indx_pos = row_indx_pos,
     col_indx_pos = col_indx_pos,
-    n_na = n_na,
-    row_indx_na = row_indx_na,
-    col_indx_na = col_indx_na,
+    # n_na = n_na,
+    # row_indx_na = row_indx_na,
+    # col_indx_na = col_indx_na,
     pro_mu = grid$pro_sd[ii],
     pro_cv = grid$pro_CV[ii],
     obs_mu = grid$obs_sd[ii],
@@ -238,11 +241,18 @@ for(ii in 1:nrow(grid)) {
              silent=TRUE)
 
   ## save raw results to a file
-  saveRDS(fit, file = file.path(raw_dir, paste0("run_", ii, ".rds")))
+  #saveRDS(fit, file = file.path(raw_dir, paste0("run_", ii, ".rds")))
 
   ## get summary of mcmc results
   pars <- as.data.frame(summary(fit, probs = c(0.025, 0.1, 0.25, 0.5, 0.75, 0.9, 0.975))$summary)
-  pars$iter <- ii
+  pars$iter <- grid$iter[ii]
+  pars$par = rownames(pars)
+
+  # calculate the geweke diagnostic
+  geweke = ggs_geweke(ggs(fit),plot=FALSE) %>% dplyr::rename(par=Parameter,chain=Chain) %>%
+    pivot_wider(names_from = chain, values_from = z) %>%
+    dplyr::rename("geweke_1"="1","geweke_2"="2","geweke_3"="3")
+  pars = dplyr::left_join(pars,geweke)
 
   ## table of posterior summaries
   post_estimates <- rbind(post_estimates, pars)
@@ -251,15 +261,3 @@ for(ii in 1:nrow(grid)) {
   saveRDS(post_estimates, file = file.path(res_dir, paste0("posterior_summaries_",this_batch,".rds")))
 }
 
-
-#g = group_by(posterior_summaries_parII[grep("Bmat",rownames(posterior_summaries_parII)),], iter) %>%
-#  summarize(m = max(Rhat,na.rm=T))
-
-#g1 = group_by(posterior_summaries_parII[grep("SD_proc",rownames(posterior_summaries_parII)),], iter) %>%
-#  summarize(m = max(Rhat,na.rm=T))
-
-#g2 = group_by(posterior_summaries_parII[grep("SD_obs",rownames(posterior_summaries_parII)),], iter) %>%
-#  summarize(m = max(Rhat,na.rm=T))
-
-#g3 = group_by(posterior_summaries_parII[grep("xx",rownames(posterior_summaries_parII)),], iter) %>%
-#  summarize(m = max(Rhat,na.rm=T))
