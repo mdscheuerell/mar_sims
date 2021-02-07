@@ -8,6 +8,7 @@ n_batch = 3 # max - 3 by default
 ##-------------------
 ## initialize & load
 ##-------------------
+library(dplyr)
 if(!require("ggmcmc")) {
   install.packages("ggmcmc")
   library(ggmcmc)
@@ -246,8 +247,8 @@ for(ii in which(grid$batch == this_batch)) {
   ## get summary of mcmc results
   pars <- as.data.frame(summary(fit, probs = c(0.025, 0.1, 0.25, 0.5, 0.75, 0.9, 0.975))$summary)
   pars$iter <- grid$iter[ii]
-  pars$par = rownames(pars)
-
+  pars$par <- rownames(pars)
+  pars$seed <- grid$seed[ii]
   # calculate the geweke diagnostic
   geweke = ggs_geweke(ggs(fit),plot=FALSE) %>% dplyr::rename(par=Parameter,chain=Chain) %>%
     pivot_wider(names_from = chain, values_from = z) %>%
