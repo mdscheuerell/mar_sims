@@ -233,7 +233,6 @@ for(ii in which(grid$batch == this_batch)) {
                   data = dat,
                   pars = c("Bmat", "SD_proc", "SD_obs", "xx"),
                   control = stan_ctrl,
-                  init = init_ll,
                   iter = stan_mcmc$iter,
                   warmup = stan_mcmc$warmup,
                   chains = stan_mcmc$chains,
