@@ -1,3 +1,4 @@
+
 if(!require("tvvarss")) {
   devtools::install_github("nwfsc-timeseries/tvvarss")
   library("tvvarss")
@@ -226,7 +227,8 @@ for(ii in 1:nrow(grid)) {
   ## get summary of mcmc results
   pars <- as.data.frame(summary(fit, probs = c(0.025, 0.1, 0.25, 0.5, 0.75, 0.9, 0.975))$summary)
   pars$iter <- grid$iter[ii]
-  pars$par = rownames(pars)
+  pars$par <- rownames(pars)
+  pars$seed <- grid$seed[ii]
 
   # calculate the geweke diagnostic
   geweke = ggs_geweke(ggs(fit),plot=FALSE) %>% dplyr::rename(par=Parameter,chain=Chain) %>%
@@ -240,6 +242,9 @@ for(ii in 1:nrow(grid)) {
   ## save table of posterior summaries
   saveRDS(post_estimates, file = file.path(res_dir, paste0("posterior_summaries_2surveys.rds")))
 }
+
+
+
 
 for(ii in 1:nrow(grid)) {
   fit = readRDS(file = file.path(raw_dir, paste0("run_", ii, "_2survey.rds")))
