@@ -79,7 +79,9 @@ g1 = ggplot(x, aes(Surveys,mean, col=Scenario, fill=Scenario)) +
   geom_hline(aes(yintercept = true),col="red",alpha=0.3) +
   scale_fill_viridis(discrete = TRUE, end=0.7,labels = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.4")), atop(paste(sigma[obs],"= 0.4"), paste(sigma[pro],"= 0.2")) )) +
   scale_color_viridis(discrete = TRUE, end=0.7,labels = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.4")), atop(paste(sigma[obs],"= 0.4"), paste(sigma[pro],"= 0.2")) )) +
-  theme_bw()
+  theme_bw() +
+  theme(strip.background = element_rect(color="black",fill="white"))
+
 
 pdf("plots/Figure_3.pdf")
 g1
@@ -108,7 +110,8 @@ p <- ggplot(g, aes(Surveys,cover, col=Scenario)) +
   facet_wrap(~par) +
   geom_hline(aes(yintercept=0.8),col="red",alpha=0.7) +
   scale_color_viridis(discrete = TRUE, end=0.7,labels = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.4")), atop(paste(sigma[obs],"= 0.4"), paste(sigma[pro],"= 0.2")) )) +
-  theme_bw()
+  theme_bw() +
+  theme(strip.background = element_rect(color="black",fill="white"))
 
 pdf("plots/Figure_3_coverage.pdf")
 p

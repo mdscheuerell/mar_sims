@@ -3,20 +3,31 @@ library(ggplot2)
 library(ggforce)
 
 grid = readRDS("grid.rds")
-post = readRDS("results/posterior_summaries_final.rds")
-post$par = rownames(post)
 
-grid$iter = seq(1,nrow(grid))
+# load in batched results
+for(i in 1:9) {
+  test = readRDS(paste0("results/posterior_summaries_",i,".rds"))
+  if(i == 1) {
+    post = test
+  } else {
+    post = rbind(post, test)
+  }
+}
+# filter runs based on convergence --
+keep = dplyr::group_by(post, seed) %>%
+  dplyr::summarize(max_rhat = max(Rhat,na.rm=T)) %>%
+  dplyr::filter(max_rhat <= 1.1)
+post = dplyr::filter(post, seed %in% keep$seed)
 
-sd_obs_locs = grep("SD_obs",rownames(post))
+sd_obs_locs = grep("SD_obs",post$par)
 obs_sd_dat = post[sd_obs_locs,] %>%
-  dplyr::select(mean,iter) %>%
+  dplyr::select(mean,seed) %>%
   dplyr::rename(sd_obs_est = mean)
 grid = dplyr::left_join(grid, obs_sd_dat)
 
-sd_pro_locs = grep("SD_pro",rownames(post))
+sd_pro_locs = grep("SD_pro",post$par)
 pro_sd_dat = post[sd_pro_locs,] %>%
-  dplyr::select(mean,iter) %>%
+  dplyr::select(mean,seed) %>%
   dplyr::rename(sd_pro_est = mean)
 grid = dplyr::left_join(grid, pro_sd_dat)
 
