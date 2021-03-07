@@ -4,8 +4,21 @@ library(viridis)
 library(ggforce)
 
 grid = readRDS("grid.rds")
-post = readRDS("results/posterior_summaries_final.rds")
-post$par = rownames(post)
+
+# load in batched results
+for(i in 1:9) {
+  test = readRDS(paste0("results/posterior_summaries_",i,".rds"))
+  if(i == 1) {
+    post = test
+  } else {
+    post = rbind(post, test)
+  }
+}
+# filter runs based on convergence --
+keep = dplyr::group_by(post, seed) %>%
+  dplyr::summarize(max_rhat = max(Rhat,na.rm=T)) %>%
+  dplyr::filter(max_rhat <= 1.1)
+post = dplyr::filter(post, seed %in% keep$seed)
 
 # sd_obs_locs = grep("SD_obs",rownames(post))
 # grid$sd_obs_est = post$mean[sd_obs_locs]
@@ -23,7 +36,7 @@ grid$obs_CV_label = factor(grid$obs_CV,
   labels = c("CV[obs] == 0.1","CV[obs] == 0.5","CV[obs] == 1"))
 
 # make similar plots for interactions
-grid$iter = seq(1,nrow(grid))
+#grid$iter = seq(1,nrow(grid))
 post = dplyr::left_join(post, grid)
 
 B0_lfc <- matrix(c(0.5, -0.1,  0.0,  0.0,
@@ -77,9 +90,10 @@ g1 = ggplot(post_summary,
   theme_bw() +
   theme(legend.position='none',strip.background = element_rect(color="black",fill="white")) +
   scale_x_discrete(labels = c('0.2 0.2' = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.2"))),
-    '0.2 0.4' = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.4"))),
-    '0.4 0.2' = expression(atop(paste(sigma[obs],"= 0.4"), paste(sigma[pro],"= 0.2"))),
-    '0.4 0.4'   = expression(atop(paste(sigma[obs],"= 0.4"),paste(sigma[pro],"= 0.4")))))
+  '0.2 0.4' = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.4"))),
+  '0.4 0.2' = expression(atop(paste(sigma[obs],"= 0.4"), paste(sigma[pro],"= 0.2"))),
+  '0.4 0.4'   = expression(atop(paste(sigma[obs],"= 0.4"),paste(sigma[pro],"= 0.4"))))) +
+  theme(axis.text.x=element_text(size=rel(0.6)))
 g1
 dev.off()
 
@@ -91,19 +105,19 @@ dev.off()
 # make coverage plot
 
 post_summary$coverage = 0
-indx = which((post_summary$true < post_summary$`75%`) & (post_summary$true > post_summary$`25%`))
+indx = which((post_summary$true < post_summary$`90%`) & (post_summary$true > post_summary$`10%`))
 post_summary$coverage[indx] = 1
 
 cov_summary = group_by(post_summary, group, shortpar) %>%
   summarize(group_label = group_label[1],
-            coverage = length(which(coverage==1))/100)
+            coverage = length(which(coverage==1))/n())
 
 p1 = ggplot(cov_summary,
        aes(x = group, y=coverage, group=group, col=group,fill=group)) +
   geom_point()+
   #geom_sina(size=1, alpha=0.35) +
   #geom_violin(alpha=0.2,outlier.shape = NA,draw_quantiles = c(0.25, 0.5, 0.75)) +
-  ylab("Estimated B parameter") +
+  ylab("Coverage of posterior CIs") +
   xlab("Scenario") +
   facet_wrap(~shortpar, scale="free_y") +
   scale_fill_viridis(discrete = TRUE, end=0.7) +
@@ -113,7 +127,8 @@ p1 = ggplot(cov_summary,
   scale_x_discrete(labels = c('0.2 0.2' = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.2"))),
                               '0.2 0.4' = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.4"))),
                               '0.4 0.2' = expression(atop(paste(sigma[obs],"= 0.4"), paste(sigma[pro],"= 0.2"))),
-                              '0.4 0.4'   = expression(atop(paste(sigma[obs],"= 0.4"),paste(sigma[pro],"= 0.4")))))
+                              '0.4 0.4'   = expression(atop(paste(sigma[obs],"= 0.4"),paste(sigma[pro],"= 0.4"))))) +
+  theme(axis.text.x=element_text(size=rel(0.6)))
 pdf("plots/Figure_2_coverage.pdf")
 p1
 dev.off()
