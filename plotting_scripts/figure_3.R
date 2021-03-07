@@ -72,7 +72,7 @@ x$mean[which(x$par %in% c("Bmat[1,3]","Bmat[1,4]","Bmat[2,4]","Bmat[3,1]","Bmat[
 x$Surveys = as.factor(x$Surveys)
 g1 = ggplot(x, aes(Surveys,mean, col=Scenario, fill=Scenario)) +
   geom_boxplot(alpha=0.3,outlier.shape = NA) +
-  geom_point(alpha=0.1)+
+  geom_point(position=position_dodge(width=0.75),aes(group=Scenario),alpha=0.1)+
   ylab("Estimated B parameter") +
   xlab("Surveys")+
   facet_wrap(~par,scale="free_y") +
