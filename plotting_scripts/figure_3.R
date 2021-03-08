@@ -69,8 +69,9 @@ x$true[which(x$par=="Bmat[4,4]")] = 0.8
 
 x$mean[which(x$par %in% c("Bmat[1,3]","Bmat[1,4]","Bmat[2,4]","Bmat[3,1]","Bmat[4,1]","Bmat[4,2]"))] = NA
 
+x$median = x[,"50%"]
 x$Surveys = as.factor(x$Surveys)
-g1 = ggplot(x, aes(Surveys,mean, col=Scenario, fill=Scenario)) +
+g1 = ggplot(x, aes(Surveys,median, col=Scenario, fill=Scenario)) +
   geom_boxplot(alpha=0.3,outlier.shape = NA) +
   geom_point(position=position_dodge(width=0.75),aes(group=Scenario),alpha=0.1)+
   ylab("Estimated B parameter") +
@@ -113,11 +114,33 @@ p <- ggplot(g, aes(Surveys,cover, col=Scenario)) +
   theme_bw() +
   theme(strip.background = element_rect(color="black",fill="white"))
 
-pdf("plots/Figure_3_coverage.pdf")
+pdf("plots/Figure_S7_coverage.pdf")
 p
 dev.off()
 
-jpeg("plots/Figure_3_coverage.jpeg")
+jpeg("plots/Figure_S7_coverage.jpeg")
 p
 dev.off()
 
+############## Also show the standard deviation
+g = dplyr::group_by(x, Surveys, Scenario, par) %>%
+  dplyr::summarise(mean_sd = mean(sd))
+
+g$mean_sd[which(g$par %in% c("Bmat[1,3]","Bmat[1,4]","Bmat[2,4]","Bmat[3,1]","Bmat[4,1]","Bmat[4,2]"))] = NA
+
+p <- ggplot(g, aes(Surveys,mean_sd, col=Scenario)) +
+  geom_point(size=2.5)+
+  ylab("Standard deviation of parameter") +
+  xlab("Scenario") +
+  facet_wrap(~par, scale="free_y") +
+  scale_color_viridis(discrete = TRUE, end=0.7,labels = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.4")), atop(paste(sigma[obs],"= 0.4"), paste(sigma[pro],"= 0.2")) )) +
+  theme_bw() +
+  theme(strip.background = element_rect(color="black",fill="white"))
+
+pdf("plots/Figure_S6_sd.pdf")
+p
+dev.off()
+
+jpeg("plots/Figure_S6_sd.jpeg")
+p
+dev.off()
