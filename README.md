@@ -1,4 +1,4 @@
-# This is a repository containing code and simulation results for Scheuerell et al. (in review)
+### This is a repository containing code and simulation results for Scheuerell et al. (in review)
 
 The code included is generic, including models for multivariate autogregressive models. We denote these generally as MAR(1) or VAR(1) models when the approach does not include observation or measurement errors, versus MARSS(1) or VARSS(1) models. These models are all stationary, and can be differentiated from models with time-varying parameters included in our other repository, for TVVARSS(1) models https://github.com/nwfsc-timeseries/tvvarsshttps://github.com/nwfsc-timeseries/tvvarss.
 
