@@ -71,15 +71,25 @@ x$mean[which(x$par %in% c("Bmat[1,3]","Bmat[1,4]","Bmat[2,4]","Bmat[3,1]","Bmat[
 
 x$median = x[,"50%"]
 x$Surveys = as.factor(x$Surveys)
-g1 = ggplot(x, aes(Surveys,median, col=Scenario, fill=Scenario)) +
-  geom_boxplot(alpha=0.3,outlier.shape = NA) +
-  geom_point(position=position_dodge(width=0.75),aes(group=Scenario),alpha=0.1)+
+
+x$group = as.factor(paste(x$Surveys,x$Scenario))
+x$new_group = as.numeric(x$group)
+x$new_group[which(as.numeric(x$group)%in%c(1,3,5))] = x$new_group[which(as.numeric(x$group)%in%c(1,3,5))] + 0.25
+x$new_group[which(as.numeric(x$group)%in%c(2,4,6))] = x$new_group[which(as.numeric(x$group)%in%c(2,4,6))] - 0.25
+x$new_group = x$new_group - 0.25 + 0.005*x$iter
+
+g1 = ggplot(x[x$iter < 95,], aes(new_group,mean, group=group, col=Scenario, fill=Scenario)) +
+  #geom_boxplot(alpha=0.3,outlier.shape = NA) +
+  #geom_point(position=position_dodge(width=0.75),aes(group=Scenario),alpha=0.1)+
+  geom_linerange(aes(ymin=`25%`,ymax=`75%`),alpha=0.1,outlier.shape = NA) +
+  geom_boxplot(alpha=0.3,fill=NA,outlier.shape = NA) +
   ylab("Estimated B parameter") +
   xlab("Surveys")+
   facet_wrap(~par,scale="free_y") +
   geom_hline(aes(yintercept = true),col="red",alpha=0.3) +
   scale_fill_viridis(discrete = TRUE, end=0.7,labels = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.4")), atop(paste(sigma[obs],"= 0.4"), paste(sigma[pro],"= 0.2")) )) +
   scale_color_viridis(discrete = TRUE, end=0.7,labels = expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.4")), atop(paste(sigma[obs],"= 0.4"), paste(sigma[pro],"= 0.2")) )) +
+  scale_x_continuous(breaks=c(1.5,3.5,5.5), labels = c("1","2","4")) +  
   theme_bw() +
   theme(strip.background = element_rect(color="black",fill="white"))
 

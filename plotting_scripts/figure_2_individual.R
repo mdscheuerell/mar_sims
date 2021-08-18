@@ -78,11 +78,11 @@ post_summary$true[which(is.na(post_summary$mean))] = NA
 post_summary$new_group = as.numeric(post_summary$group)
 post_summary$new_group = post_summary$new_group - 0.25 + 0.005*post_summary$iter
 
-post_summary = group_by(post_summary())
+#post_summary = group_by(post_summary())
 
 g1 = ggplot(post_summary[post_summary$iter<95,],
   aes(x = new_group, y=mean, group=group, col=group,fill=group)) +
-  geom_linerange(aes(ymin=mean-sd,ymax=mean+sd),alpha=0.1,outlier.shape = NA) +
+  geom_linerange(aes(ymin=`25%`,ymax=`75%`),alpha=0.1,outlier.shape = NA) +
   geom_boxplot(alpha=0.3,fill=NA,outlier.shape = NA) +
   #geom_point(alpha=0.1)+
   #geom_sina(size=1, alpha=0.35) +

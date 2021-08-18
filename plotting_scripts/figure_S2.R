@@ -54,12 +54,22 @@ dplyr::filter(post, obs_CV==1, pro_CV==1, !is.na(shortpar)) %>%
   dplyr::filter(b_CV==1, shortpar %in% c("B[1,1]","B[2,2]","B[3,3]","B[4,4]"))
 
 pdf("plots/Figure_S2_estimated_b_elements_bCV.pdf")
-g5 = ggplot(dplyr::filter(post, obs_CV==1, pro_CV==1, !is.na(shortpar)),
-       aes(x=as.factor(b_CV), y=mean,group=as.factor(b_CV))) +
-  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
+
+post = dplyr::filter(post, obs_CV==1, pro_CV==1, !is.na(shortpar))
+
+post$group = as.factor(post$b_CV)
+post$new_group = as.numeric(post$group)
+post$new_group = post$new_group - 0.25 + 0.005*post$iter
+
+g5 = ggplot(post[which(post$iter<95),],
+       aes(x=new_group, y=mean,group=group)) +
+  geom_linerange(aes(ymin=`25%`,ymax=`75%`),alpha=0.02,outlier.shape = NA, col="darkblue") +
+  geom_boxplot(alpha=0.3,fill=NA,outlier.shape = NA,col="darkblue") +
+  #geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
   ylab("Estimated B parameter") + xlab("prior CV on B parameter") +
   facet_wrap(~shortpar,scale="free_y") +
   geom_hline(aes(yintercept = true),col="red",alpha=0.3) +
+  scale_x_continuous(breaks=c(1,2,3), labels = c("0.1","0.5","1.0")) + 
   theme_bw() +
   theme(legend.position='none',strip.background = element_rect(color="black",fill="white"))
 g5

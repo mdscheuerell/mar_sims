@@ -18,10 +18,10 @@ g2 = ggplot(fitdf, aes(sd_obs, sd_proc, z=lp)) +
   ylab(expression(paste("Pro. error ",sigma))) + 
   labs(fill = "Log posterior")
 
-pdf("plots/Figure_S1_variance_tradeoff.pdf")
+pdf("plots/Figure_S3_variance_tradeoff.pdf")
 gridExtra::grid.arrange(g1,g2,nrow=1)
 dev.off()
 
-jpeg("plots/Figure_S1_variance_tradeoff.jpeg")
+jpeg("plots/Figure_S3_variance_tradeoff.jpeg")
 gridExtra::grid.arrange(g1,g2,nrow=1)
 dev.off()
