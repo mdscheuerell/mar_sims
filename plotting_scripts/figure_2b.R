@@ -69,10 +69,13 @@ pdf("plots/Figure_2b.pdf")
 post_summary$mean[which(post_summary$mean==0)] = NA
 post_summary$true[which(is.na(post_summary$mean))] = NA
 
-g1 = ggplot(post_summary,
-  aes(x = group, y=mean, group=group, col=group,fill=group)) +
-  geom_boxplot(alpha=0.3,outlier.shape = NA) +
-  geom_point(alpha=0.1)+
+post_summary$new_group = as.numeric(as.factor(post_summary$group))
+post_summary$new_group = post_summary$new_group - 0.25 + 0.005*post_summary$iter
+
+g1 = ggplot(post_summary[which(post_summary$iter < 95),],
+            aes(x = new_group, y=mean, group=group, col=group,fill=group)) +
+  geom_linerange(aes(ymin=`25%`,ymax=`75%`),alpha=0.1,outlier.shape = NA) +
+  geom_boxplot(alpha=0.3,outlier.shape = NA, fill=NA)+
   #geom_sina(size=1, alpha=0.35) +
   #geom_violin(alpha=0.2,outlier.shape = NA,draw_quantiles = c(0.25, 0.5, 0.75)) +
   ylab("Estimated B parameter") +
@@ -83,8 +86,9 @@ g1 = ggplot(post_summary,
   scale_color_viridis(discrete = TRUE, end=0.7) +
   theme_bw() +
   theme(legend.position='none',strip.background = element_rect(color="black",fill="white")) +
-  scale_x_discrete(labels = c('0.4 0.2' = expression(atop(paste(sigma[obs],"= 0.4"), paste(sigma[pro],"= 0.2"))),
-    '0.2 0.4'   = expression(atop(paste(sigma[obs],"= 0.2"),paste(sigma[pro],"= 0.4")))))
+  scale_x_continuous(breaks=c(1,2), 
+                     labels = c(expression(atop(paste(sigma[obs],"= 0.2"), paste(sigma[pro],"= 0.4"))),
+                                expression(atop(paste(sigma[obs],"= 0.4"), paste(sigma[pro],"= 0.2"))))) 
 g1
 dev.off()
 
