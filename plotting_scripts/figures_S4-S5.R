@@ -9,11 +9,11 @@ grid$obs_CV_label = paste0("obs_CV=",grid$obs_CV)
 
 grid$sd_obs_est = sqrt(grid$R)
 grid$sd_pro_est = sqrt(grid$Q)
-
+  
 # make basic plots of
 pdf("plots/Figure_S4_obs_error_variance.pdf")
 g1 = ggplot(dplyr::filter(grid, b_CV==1,sd_obs_est < 1),
-            aes(x = as.factor(""), y=sd_obs_est)) +
+       aes(x = as.factor(""), y=sd_obs_est)) +
   geom_point(position = position_dodge2(0.1), fill="darkblue",col="darkblue",alpha=0.1,size=0.5) + 
   geom_boxplot(col="darkblue",width=0.2,fill=NA,alpha=0.4,outlier.shape = NA) +
   ylab(expression(paste("Estimated observation error ",sigma))) +
@@ -31,7 +31,7 @@ dev.off()
 
 pdf("plots/Figure_S5_pro_error_variance.pdf")
 g2 = ggplot(dplyr::filter(grid, b_CV==1, sd_pro_est<1),
-            aes(x = as.factor(""), y=sd_pro_est)) +
+  aes(x = as.factor(""), y=sd_pro_est)) +
   geom_point(position = position_dodge2(0.1), fill="darkblue",col="darkblue",alpha=0.1,size=0.5) + 
   geom_boxplot(col="darkblue",width=0.2,fill=NA,alpha=0.4,outlier.shape = NA) +
   ylab(expression(paste("Estimated process error ",sigma))) +

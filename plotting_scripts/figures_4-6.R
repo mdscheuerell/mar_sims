@@ -21,14 +21,19 @@ post = dplyr::filter(post, seed %in% keep$seed)
 
 sd_obs_locs = grep("SD_obs",post$par)
 obs_sd_dat = post[sd_obs_locs,] %>%
-  dplyr::select(mean,seed) %>%
-  dplyr::rename(sd_obs_est = mean)
+  dplyr::select(mean,seed,sd,`25%`,`75%`) %>%
+  dplyr::rename(sd_obs_est = mean, sd_obs_sd = sd,
+                sd_obs_lo = `25%`,
+                sd_obs_hi = `75%`)
 grid = dplyr::left_join(grid, obs_sd_dat)
+
 
 sd_pro_locs = grep("SD_pro",post$par)
 pro_sd_dat = post[sd_pro_locs,] %>%
-  dplyr::select(mean,seed) %>%
-  dplyr::rename(sd_pro_est = mean)
+  dplyr::select(mean,seed,sd,`25%`,`75%`) %>%
+  dplyr::rename(sd_pro_est = mean, sd_pro_sd = sd,
+                sd_pro_lo = `25%`,
+                sd_pro_hi = `75%`)
 grid = dplyr::left_join(grid, pro_sd_dat)
 
 # labels
@@ -41,14 +46,17 @@ grid$pro_CV_label = factor(grid$pro_CV,
 grid$obs_CV_label = factor(grid$obs_CV,
   labels = c("CV[obs] == 0.1","CV[obs] == 0.5","CV[obs] == 1"))
 
+sub = dplyr::filter(grid, b_CV==1)
+sub$new_group = as.numeric(as.factor(sub$obs_CV))
+sub$new_group = sub$new_group - 0.25 + 0.005*sub$iter
+
 # Figure 04 - observation error
 pdf("plots/Figure_04_estimated_obs_error.pdf")
-g1 = ggplot(dplyr::filter(grid, b_CV==1),
-  aes(x=as.factor(obs_CV), y=sd_obs_est, group=as.factor(obs_CV))) +
-  geom_boxplot(col="darkblue",fill="darkblue",alpha=0.3,outlier.shape = NA) +
-  geom_point(col="darkblue", alpha=0.1) +
-  #geom_violin(col="darkblue",fill="darkblue",alpha=0.2,outlier.shape = NA,draw_quantiles = c(0.25, 0.5, 0.75)) +
-  #geom_sina(col = "darkblue", size=1, alpha=0.35) +
+g1 = ggplot(sub[which(sub$iter<95),],
+  aes(x=new_group, y=sd_obs_est, group=as.factor(obs_CV))) +
+  geom_linerange(aes(ymin=sd_obs_lo,ymax=sd_obs_hi),col="darkblue",alpha=0.1) + 
+  #geom_point(position = position_dodge2(0.1), fill="darkblue",col="darkblue",alpha=0.1,size=0.5) + 
+  geom_boxplot(col="darkblue",width=0.2,fill=NA,alpha=0.4,outlier.shape = NA) +
   xlab(expression(prior~CV~sigma[obs])) + ylab(expression(Estimated~sigma[obs])) +
   geom_hline(aes(yintercept = obs_sd),col="red",alpha=0.3) +
   facet_grid(obs_sd_label ~ pro_sd_label, scale="free_y",labeller = "label_parsed") +
@@ -60,11 +68,16 @@ jpeg("plots/Figure_04_estimated_obs_error.jpeg")
 g1
 dev.off()
 
+sub = dplyr::filter(grid, b_CV==1)
+sub$new_group = as.numeric(as.factor(sub$pro_CV))
+sub$new_group = sub$new_group - 0.25 + 0.005*sub$iter
+
 pdf("plots/Figure_05_estimated_process_error.pdf")
-g2 = ggplot(dplyr::filter(grid, b_CV==1),
-  aes(x=as.factor(pro_CV), y=sd_pro_est, group=as.factor(pro_CV))) +
+g2 = ggplot(sub[which(sub$iter<95),],
+            aes(x=new_group, y=sd_pro_est, group=as.factor(pro_CV))) +
+  geom_linerange(aes(ymin=sd_pro_lo,ymax=sd_pro_hi),col="darkblue",alpha=0.1) + 
   geom_boxplot(col="darkblue",fill="darkblue",alpha=0.4,outlier.shape = NA) +
-  geom_point(col="darkblue", alpha=0.1) +
+  #geom_point(col="darkblue", alpha=0.1) +
   #geom_violin(col="darkblue",fill="darkblue",alpha=0.2,outlier.shape = NA,draw_quantiles = c(0.25, 0.5, 0.75)) +
   #geom_sina(col = "darkblue", size=1, alpha=0.35) +
   xlab(expression(prior~CV~sigma[pro])) + ylab(expression(Estimated~sigma[pro])) +
@@ -77,6 +90,8 @@ dev.off()
 jpeg("plots/Figure_05_estimated_process_error.jpeg")
 g2
 dev.off()
+
+
 
 pdf("plots/Figure_06_obs_v_process_error.pdf")
 g3 = ggplot(dplyr::filter(dplyr::filter(grid, b_CV==1), obs_sd == 0.2, pro_sd==0.2),
