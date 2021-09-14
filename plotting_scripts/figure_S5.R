@@ -25,6 +25,7 @@ x2 = dplyr::left_join(x2, grid)
 
 x = rbind(x,x2)
 
+x = dplyr::filter(x, pro_CV==1, obs_CV==1, b_CV==1)
 x$true = NA
 x$true[which(x$par=="Bmat[1,1]")] = 0.5
 x$true[which(x$par=="Bmat[1,2]")] = -0.1
@@ -36,8 +37,6 @@ x$true[which(x$par=="Bmat[3,3]")] = 0.7
 x$true[which(x$par=="Bmat[3,4]")] = -0.3
 x$true[which(x$par=="Bmat[4,3]")] = 0.1
 x$true[which(x$par=="Bmat[4,4]")] = 0.8
-
-x = dplyr::filter(x, b_CV==1)
 
 g1 = ggplot(x, aes(scenario,mean,group=scenario, col=scenario, fill=scenario)) + 
   geom_boxplot(alpha=0.4,outlier.shape = NA) + 
