@@ -1,0 +1,154 @@
+TaxonomicCode,ScientificName,Genus,Species,Division,BiovolumeUsed,TSN,BiovolumeUnit,Notes
+101,Actinastrum hantzschii,Actinastrum,hantzschii,Chlorophyta,68,6099,cell,Identifed from 1975
+102,Actinastrum hantzchii var. fluviatile,Actinastrum,hantzchii var. fluviatile,Chlorophyta,68,6100,cell,Identifed from 1975
+103,Ankistrodesmus falcatus,Ankistrodesmus,falcatus,Chlorophyta,30,5878,cell,Identifed from 1975
+104,Ankistrodesmus spiralis,Ankistrodesmus,spiralis,Chlorophyta,30,5889,cell,Identifed from 1975
+105,Carteria cordiformis,Carteria,cordiformis,Chlorophyta,400,5442,cell,Identifed from 1975
+106,Carteria globosa,Carteria,globosa,Chlorophyta,400,5434,cell,Identifed from 1975
+107,Chlamydomonas spp.,Chlamydomonas,spp.,Chlorophyta,148,5448,cell,Identifed from 1975
+108,Closteridium moniliforme,Closterium,moniliforme,Chlorophyta,4000,7357,cell,Identifed from 1975
+109,Closteriopsis longissima,Closteriopsis,longissima,Chlorophyta,1000,5927,cell,Identifed from 1975
+110,Coelastrum microporum,Coelastrum,microporum,Chlorophyta,3000,6279,cell,Identifed from 1975
+111,Coelastrum reticulatum,Coelastrum,reticulatum,Chlorophyta,3000,6281,cell,Identifed from 1975
+112,Cosmarium pyramidatum,Cosmarium,pyramidatum,Chlorophyta,20000,8060,cell,Identifed from 1975
+113,Cosmarium reniforme,Cosmarium,reniforme,Chlorophyta,30000,8089,cell,Identifed from 1975
+114,Crucigenia tetrapedia,Crucigenia,tetrapedia,Chlorophyta,148,6226,cell,Identifed from 1975
+115,Dictyosphaerium puchellum,Dictyosphaerium,puchellum,Chlorophyta,148,6298,cell,Identifed from 1975
+116,Elactothrix geletinosa,Elactothrix,geletinosa,Chlorophyta,600,9413,cell,Identifed from 1975
+117,Eudorina elegans,Eudorina,elegans,Chlorophyta,3000,5598,cell,Identifed from 1975
+118,Franceia ovalis,Franceia,ovalis,Chlorophyta,148,5960,cell,Identifed from 1975
+119,Golenkinia paucispina,Golenkinia,paucispina,Chlorophyta,434,6318,cell,Identifed from 1975
+120,Golenkinia radiata,Golenkinia,radiata,Chlorophyta,434,6315,cell,Identifed from 1975
+121,Kirchneriella contorta,Kirchneriella,contorta,Chlorophyta,75,5905,cell,Identifed from 1975
+122,Kirchneriella lunaris,Kirchneriella,lunaris,Chlorophyta,75,5896,cell,Identifed from 1975
+123,Langenheimia quadriseta,Langenheimia,quadriseta,Chlorophyta,75,5867,cell,Identifed from 1975
+124,Micractinium pusillum,Micractinium,pusillum,Chlorophyta,500,6322,cell,Identifed from 1975
+125,Mougeotia sp.,Mougeotia,spp.,Chlorophyta,10000,7055,cell,Identifed from 1975
+126,Oocystis elliptica,Oocystis,elliptica,Chlorophyta,700,5834,cell,Identifed from 1975
+127,Oocystis lacustris,Oocystis,lacustris,Chlorophyta,700,5837,cell,Identifed from 1975
+128,Pandorina morum,Pandorina,morum,Chlorophyta,4000,5580,colony,Identifed from 1975
+129,Pediastrum boryanum,Pediastrum,boryanum,Chlorophyta,347,6032,cell,Identifed from 1975
+130,Pediastrum duplex var. reticulatum,Pediastrum,duplex var. reticulatum,Chlorophyta,388,6038,cell,Identifed from 1975
+131,Pediastrum obtusum,Pediastrum,obtusum,Chlorophyta,388,6065,cell,Identifed from 1975
+132,Phacus accuminatus,Phacus,accuminatus,Chlorophyta,999,9767,cell,Identifed from 1975
+133,Quadrigula closteroides,Quadrigula,closteroides,Chlorophyta,70,5939,cell,Identifed from 1975
+134,Quadrigula lacustris,Quadrigula,lacustris,Chlorophyta,70,5941,cell,Identifed from 1975
+135,Scenedesmus abundans,Scenedesmus,abundans,Chlorophyta,30,6133,cell,Identifed from 1975
+136,Scenedesmus armatus var. bicaudatus,Scenedesmus,armatus var. bicaudatus,Chlorophyta,125,6126,cell,Identifed from 1975
+137,Scenedesmus bijuga,Scenedesmus,bijuga,Chlorophyta,30,6127,cell,Identifed from 1975
+138,Scenedesmus bijuga var. alterans,Scenedesmus,bijuga var. alterans,Chlorophyta,30,6128,cell,Identifed from 1975
+139,Scenedesmus dimorphus,Scenedesmus,dimorphus,Chlorophyta,300,6143,cell,Identifed from 1975
+140,Scenedesmus denticulatus,Scenedesmus,denticulatus,Chlorophyta,30,6145,cell,Identifed from 1975
+141,Scenedesmusopoliensis,Scenedesmus,opoliensis,Chlorophyta,425,6194,cell,Identifed from 1975
+142,Scenedesmus quadricuada var. quadrispina,Scenedesmus,quadricuada var. quadrispina,Chlorophyta,30,6117,cell,Identifed from 1975
+143,Scenedesmus quadricuada var. longispina,Scenedesmus,quadricuada var. longispina,Chlorophyta,30,6114,cell,Identifed from 1975
+144,Schroederia indica,Schroederia,indica,Chlorophyta,1387,5656,cell,Identifed from 1975
+145,Schroederia setigerum,Schroederia,setigerum,Chlorophyta,1000,5657,cell,Identifed from 1975
+146,Selenastrum gracile,Selenastrum,gracile,Chlorophyta,140,6254,cell,Identifed from 1975
+147,Selenastrum westii,Selenastrum,westii,Chlorophyta,140,6258,cell,Identifed from 1975
+148,Sphaerocystis schroeteri,Sphaerocystis,schroeteri,Chlorophyta,150,9170,cell,Identifed from 1975
+149,Sylosphaeridium stipitatum,Sylosphaeridium,stipitatum,Chlorophyta,1100,9220,cell,Identifed from 1975
+150,Staurastrum natatur var. crassum,Staurastrum,natatur var. crassum,Chlorophyta,20000,7670,cell,Identifed from 1975
+151,Tetraedron minimum,Tetraedron,minimum,Chlorophyta,150,5670,cell,Identifed from 1975
+152,Tetraedron trigonum,Tetraedron,trigonum,Chlorophyta,491,5662,cell,Identifed from 1975
+153,Treubaria setigerum,Treubaria,setigerum,Chlorophyta,50,5921,cell,Identifed from 1975
+154,Volvox aureus,Volvox,aureus,Chlorophyta,30000,5585,cell,Identifed from 1975
+155,Tetraedron caudatum,Tetraedron,caudatum,Chlorophyta,150,5691,cell,Identifed from 1975
+156,Centriactus belanophorus,Centriactus,belanophorus,Chlorophyta,2710,2031,cell,Identifed from 1975 also identified as Polytoma granulifera
+157,Hematococcus lacustris,Hematococcus,lacustris,Chlorophyta,422,5607,cell,Identifed from 1975
+158,Pediastrum tetras,Pediastrum,tetras,Chlorophyta,388,6053,cell,Identifed from 1991
+159,Pediastrum simplex duodenarium,Pediastrum,simplex duodenarium,Chlorophyta,2000,6046,cell,Identifed from 1991
+160,Ankyra judayi,Ankyra,judayi,Chlorophyta,24,5791,cell,Identifed from 1991
+161,Westella botryoides,Westella,botryoides,Chlorophyta,115,5970,cell,Identifed from 1991
+162,Gloeocystis gigas,Gloeocystis,gigas,Chlorophyta,520,6361,cell,Identifed from 1991
+163,Gloeocystis major,Gloeocystis,major,Chlorophyta,729,6365,cell,Identifed from 1991
+164,Spondylosium moniliforme,Spondylosium,moniliforme,Chlorophyta,210,8469,cell,Identifed from 1991
+165,Tetraedron arthrodesmiforme,Tetraedron,arthrodesmiforme,Chlorophyta,280,5684,cell,Identifed from 1991
+166,Chaetosphaeridium globosum,Chaetosphaeridium,globosum,Chlorophyta,512,9370,cell,Identifed from 1991
+167,Closterium sp,Closterium,spp.,Chlorophyta,350,7257,cell,Identifed from 1991
+168,Echinosphaerella limnetica,Echinosphaerella,limnetica,Chlorophyta,500,6337,cell,Identifed from 1991
+169,Characium sp,Characium,spp.,Chlorophyta,243,5756,cell,Identifed from 1991
+170,Ankistrodesmus braunii,Ankistrodesmus,braunii,Chlorophyta,800,5887,cell,Identifed from 1991
+201,Cladomonas fruticulosa,Cladomonas,fruticulosa,Chrysophyta,50,13725,cell,Identifed from 1975
+202,Chromulina sp.,Chromulina,spp.,Chrysophyta,50,1717,cell,Identifed from 1975
+203,Chromulina minuta,Chromulina,minuta,Chrysophyta,15,1726,cell,Identifed from 1975
+204,Chrysamoeba radians,Chrysamoeba,radians,Chrysophyta,250,1827,cell,Identifed from 1975
+205,Chrysidiastrum catenatum,Chrysidiastrum,catenatum,Chrysophyta,250,1852,cell,Identifed from 1975
+206,Dinobryon bavaricum,Dinobryon,bavaricum,Chrysophyta,800,1522,cell,Identifed from 1975
+207,Dinobryon sertularia,Dinobryon,sertularia,Chrysophyta,800,1517,cell,Identifed from 1975
+208,Mallomonas akrokomas,Mallomonas,akrokomas,Chrysophyta,4200,1618,cell,Identifed from 1975
+209,Mallomonas dentata,Mallomonas,dentata,Chrysophyta,4200,180758,cell,Identifed from 1975
+210,Ochromonas spp.,Ochromonas,spp.,Chrysophyta,150,1455,cell,Identifed from 1975
+211,Ophiocytium capitatum var. longispinum,Ophiocytium,capitatum var. longispinum,Chrysophyta,150,2019,cell,Identifed from 1975
+212,Synura uvella,Synura,uvella,Chrysophyta,2000,1656,cell,Identifed from 1975
+213,Trachelomonas spp.,Trachelomonas,spp.,Chrysophyta,600,9690,cell,Identifed from 1975
+214,Uroglenopsis americana,Uroglenopsis,americana,Chrysophyta,200,1487,cell,Identifed from 1975
+301,Asterionella formosa,Asterionella,formosa,Bacillariophyta,700,3120,cell,Identifed from 1975
+302,Attheya zachariasi,Attheya,zachariasi,Bacillariophyta,200,591173,cell,Identifed from 1975
+303,Cocconeis placentula,Cocconeis,placentula,Bacillariophyta,1000,3596,cell,Identifed from 1975
+304,Cyclotella 5-6u,Cyclotella,5-6u,Bacillariophyta,170,2439,cell,Identifed from 1975
+305,Cyclotella 10-11u,Cyclotella,10-11u,Bacillariophyta,350,2439,cell,Identifed from 1975
+306,Cyclotella 15u,Cyclotella,15u,Bacillariophyta,520,2439,cell,Identifed from 1975
+307,Cyclotella 20u,Cyclotella,20u,Bacillariophyta,1000,2439,cell,Identifed from 1975
+308,Cymbella ventricosa,Cymbella,ventricosa,Bacillariophyta,520,591272,cell,Identifed from 1975
+309,Diatoma tenue var. elongatum,Diatoma,tenue var. elongatum,Bacillariophyta,1000,3234,cell,Identifed from 1975
+310,Fragilaria brevistriata,Fragilaria,brevistriata,Bacillariophyta,1000,2974,cell,Identifed from 1975
+311,Fragilaria capucina,Fragilaria,capucina,Bacillariophyta,1000,2953,cell,Identifed from 1975
+312,Fragilaria crotonensis,Fragilaria,crotonensis,Bacillariophyta,500,2933,cell,Identifed from 1975
+313,Fragilaria virescens,Fragilaria,virescens,Bacillariophyta,500,2967,cell,Identifed from 1975
+314,Fragilaria zasuminensis,Fragilaria,zasuminensis,Bacillariophyta,1000,3414,cell,Identifed from 1975
+315,Gyrosigma fasicola,Gyrosigma,fasicola,Bacillariophyta,5000,4624,cell,Identifed from 1975
+316,Melosira ambigua,Melosira,ambigua,Bacillariophyta,600,591194,cell,Identifed from 1975
+317,Melosira circulare,Melosira,circulare,Bacillariophyta,999,-999,cell,Identifed from 1975
+318,Melosira granulata,Melosira,granulata,Bacillariophyta,1600,591207,cell,Identifed from 1975
+319,Melosira italica,Melosira,italica,Bacillariophyta,1200,2333,cell,Identifed from 1975
+320,Melosira varians,Melosira,varians,Bacillariophyta,2000,2339,cell,Identifed from 1975
+321,Meridion circulare,Meridion,circulare,Bacillariophyta,4350,3238,cell,Identifed from 1975
+322,Navicula spp.,Navicula,spp.,Bacillariophyta,280,3649,cell,Identifed from 1975
+323,Navicula cuspidata,Navicula,cuspidata,Bacillariophyta,5000,591122,cell,Identifed from 1975
+324,Navicula gracilis,Navicula,gracilis,Bacillariophyta,280,4048,cell,Identifed from 1975
+325,Navicula minima,Navicula,minima,Bacillariophyta,280,3889,cell,Identifed from 1975
+326,Nitzschia acicularis,Nitzschia,acicularis,Bacillariophyta,600,5099,cell,Identifed from 1975
+327,Nitzschia sigmoidia,Nitzschia,sigmoidia,Bacillariophyta,5000,5127,cell,Identifed from 1975
+328,Nitzschia vermicularis,Nitzschia,vermicularis,Bacillariophyta,5000,5135,cell,Identifed from 1975
+329,Rhicuspheria curvata,Rhicuspheria,curvata,Bacillariophyta,280,3634,cell,Identifed from 1975
+330,Rhizosolenia eriensis,Rhizosolenia,eriensis,Bacillariophyta,2250,590900,cell,Identifed from 1975
+331,Stephanodiscus astraea,Stephanodiscus,astraea,Bacillariophyta,2200,2416,cell,Identifed from 1975
+332,Stephanodiscus tenuis,Stephanodiscus,tenuis,Bacillariophyta,1500,2437,cell,Identifed from 1975
+333,Surirella spp.,Surirella,spp.,Bacillariophyta,60000,5331,cell,Identifed from 1975
+334,Synedra acus,Synedra,acus,Bacillariophyta,200,3056,cell,Identifed from 1975
+335,Synedra cyclopum,Synedra,cyclopum,Bacillariophyta,400,3071,cell,Identifed from 1975
+336,Synedra rumpens,Synedra,rumpens,Bacillariophyta,960,3092,cell,Identifed from 1975
+337,Synedra ulna,Synedra,ulna,Bacillariophyta,5000,3023,cell,Identifed from 1975
+338,Tabellaria fenestrata,Tabellaria,fenestrata,Bacillariophyta,4000,3242,cell,Identifed from 1975
+401,Euglena spp.,Euglena,spp.,Euglenophyta,2000,9620,cell,Identifed from 1975
+501,Ceratium hirundinella,Ceratium,hirundinella,Pyrrhophyta,75000,10411,cell,Identifed from 1975
+502,Glenodinium borgei,Glenodinium,borgei,Pyrrhophyta,8800,10189,cell,Identifed from 1975
+503,Glenodinium armatum,Glenodinium,armatum,Pyrrhophyta,8800,10183,cell,Identifed from 1975
+504,Glenodinium pulvisculus,Glenodinium,pulvisculus,Pyrrhophyta,4000,10184,cell,Identifed from 1975
+505,Peudrum spp.,Peudrum,spp.,Pyrrhophyta,40000,10212,cell,Identifed from 1975
+506,Gymnodinium sp,Gymnodinium,spp.,Pyrrhophyta,2000,10031,cell,Identifed from 1975
+601,Cryptomonas pusilla,Cryptomonas,pusilla,Cryptophyta,200,10657,cell,Identifed from 1975
+602,Cryptomonas ovata,Cryptomonas,ovata,Cryptophyta,2500,10646,cell,Identifed from 1975
+603,Cryptomonas erosa,Cryptomonas,erosa,Cryptophyta,1500,10641,cell,Identifed from 1989
+701,Anabaena circinalis,Anabaena,circinalis,Cyanophyta,256,1104,cell,Identifed from 1975
+702,Anabaena flos-aquae,Anabaena,flos-aquae,Cyanophyta,256,1109,cell,Identifed from 1975
+703,Anabaena scheremetievi,Anabaena,scheremetievi,Cyanophyta,256,1118,cell,Identifed from 1975
+704,Aphanizomenon flos-aquae,Aphanizomenon,flos-aquae,Cyanophyta,108,1192,cell,Identifed from 1975
+705,Chroococcus limneticus,Chroococcus,limneticus,Cyanophyta,30,656,cell,Identifed from 1975
+706,Chroococcus limneticus var. dispersus,Chroococcus,limneticus var. dispersus,Cyanophyta,30,665,cell,Identifed from 1975
+707,Chroococcus limneticus var.elegans,Chroococcus,limneticus var.elegans,Cyanophyta,30,660,cell,Identifed from 1975
+708,Coelosphaerium naegelianum,Coelosphaerium,naegelianum,Cyanophyta,15000,793,cell,Identifed from 1975
+709,Gomphosphaeria lacustris,Gomphosphaeria,lacustris,Cyanophyta,2000,720,cell,Identifed from 1975
+710,Gomphosphaeria lacustris var. compacta,Gomphosphaeria,lacustris var. compacta,Cyanophyta,200,722,cell,Identifed from 1975
+711,Gloeotrichia echinulata,Gloeotrichia,echinulata,Cyanophyta,5575280,1300,colony,Identifed from 1975
+712,Lyngbya limnetica,Lyngbya,limnetica,Cyanophyta,24,894,cell,Identifed from 1975
+713,Lyngbya birgei,Lyngbya,birgei,Cyanophyta,50,883,cell,Identifed from 1975
+714,Merismopedia tenuissima,Merismopedia,tenuissima,Cyanophyta,15,793,cell,Identifed from 1975
+715,Microcystis aeruginosa,Microcystis,aeruginosa,Cyanophyta,16000,750,colony,Identifed from 1975
+716,Oscillatoria prolifica,Oscillatoria,prolifica,Cyanophyta,24,984,cell,Identifed from 1975
+717,Oscillatoria splendida,Oscillatoria,splendida,Cyanophyta,24,931,cell,Identifed from 1975
+718,Phormidium tenue,Phormidium,tenue,Cyanophyta,24,189419,cell,Identifed from 1975
+719,Merismopedia elegans var. major,Merismopedia,elegans var. major,Cyanophyta,15,743,cell,Identifed from 1989
+720,Aphanothece clathrata,Aphanothece,clathrata,Cyanophyta,5333,646,cell,Identifed from 1991
+721,Microcystis incerta,Microcystis,incerta,Cyanophyta,11000,771,colony,Identifed from 1991

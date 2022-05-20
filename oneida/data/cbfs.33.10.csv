@@ -1,0 +1,9 @@
+Site,Latitude,Longitude,Standard Site,Average Bottom Depth,Notes
+Billington Bay,43.17833,-75.9475,no,4.3,Only used in 1977
+Buoy 109,43.18611,-75.77083,yes,12,Used in all years except 1978 and 1982
+Buoy 117,43.19472,-75.85361,yes,11.9,Used in all years except 1995
+Buoy 125,43.21028,-75.92278,yes,12.1,Used in all years
+Lower South Bay,43.20833,-76.06667,no,4.2,Only used in 1977 
+Shackelton Point,43.18083,-75.92639,yes,11.4,Used in all years
+Three Mile Bay,43.22111,-76.04444,yes,6.4,Used in all years except 1978 and 1995
+Pooled Stations,-999,-999,yes,-999,Stations pooled after 1996 when more than one station sampled
